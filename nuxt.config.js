@@ -42,7 +42,7 @@ export default {
     '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
-    '@nuxt/image',
+    // '@nuxt/image',
     '@nuxtjs/dotenv',
   ],
 
@@ -63,15 +63,15 @@ export default {
     }
   },
   
-  image: {
-    domains: [
-      'imagedelivery.net'
-    ],
-    alias: {
-      cloudflare: 'https://imagedelivery.net/FYZsbuLae8g9R3ZwqoyBKQ/'
-    },
-    dir: 'static',
-  },
+  // image: {
+  //   domains: [
+  //     'imagedelivery.net'
+  //   ],
+  //   alias: {
+  //     cloudflare: 'https://imagedelivery.net/FYZsbuLae8g9R3ZwqoyBKQ/'
+  //   },
+  //   dir: 'static',
+  // },
 
   proxy: {
     '/api': { target: 'https://api.cloudflare.com/client/v4/accounts/7adcff2dc8617066b1fe6fb458dbaedf/images/v1', pathRewrite: {'^/api': ''} },
