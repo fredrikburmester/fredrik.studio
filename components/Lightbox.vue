@@ -23,9 +23,6 @@ export default {
             loading: true,
         }
     },
-    mounted() {
-        console.log(this.image)
-    },
     methods: {
         closeLightbox() {
             this.$emit('close')
