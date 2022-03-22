@@ -23,11 +23,11 @@
         <li style="display: inline-block"  v-for="menu, i in menuLinks">
           <a :class="linkClass(menu, i)" @click="goTo(menu)">{{menu}}</a>
         </li>
-        <li class="upload">
+        <!-- <li class="upload">
           <a href="/upload" class="menu-link all-initial">
             Upload
           </a>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div>
@@ -59,7 +59,6 @@ export default {
       window.removeEventListener('scroll', this.navbarShadow);
     },
     mounted() {
-      console.log("Number of albums", this.amount);
       this.active = this.$route.path.split('/')[1]
 
       if($nuxt.$route.path == '/404') {
