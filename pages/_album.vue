@@ -34,7 +34,7 @@ export default {
                 this.album = a
                 found = true
                 this.loading = false
-                break
+                return
             }
         } 
         if(!found) {
