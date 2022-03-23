@@ -1,26 +1,31 @@
 <template>
   <div style="display: unset;">
-    <nav id="navbar" class="sticky top-0"></nav>
+    <nav id="navbar" class="sticky top-0 bg-base-100"></nav>
     <div id="fullscreen" @click="toggleMenu" class="fullscreen"></div>
     <div @click="toggleMenu" class="hamburger">
-      <div id="line1" class="line"></div>
-      <div id="line2" class="line"></div>
-      <div id="line3" class="line"></div>
+      <div id="line1" class="line bg-black dark:bg-white"></div>
+      <div id="line2" class="line bg-black dark:bg-white"></div>
+      <div id="line3" class="line bg-black dark:bg-white"></div>
     </div>
-    <div class="logos all-initial">
-      <a href="https://www.facebook.com/alltidifokus/" class="all-initial">
-        <img src="/images/fb.png" alt="facebook" class="logo all-initial">
+    <div class="logos flex flex-row">
+      <label class="swap swap-rotate">
+        <input id="darkmode-switch" @click="toggleDarkMode" type="checkbox"/>
+        <svg class="swap-on fill-current w-6 h-6 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
+        <svg class="swap-off fill-current w-6 h-6 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+      </label>
+      <a href="https://www.facebook.com/alltidifokus/">
+        <img src="/images/fb.png" alt="facebook" class="logo dark:invert">
       </a>
-      <a href="https://www.instagram.com/fredrikburmester" class="all-initial">
-        <img src="/images/ig.png" alt="instagram" class="logo all-initial">
+      <a href="https://www.instagram.com/fredrikburmester">
+        <img src="/images/ig.png" alt="instagram" class="logo dark:invert">
       </a>
-      <a href="https://www.github.com/fredrikburmester" class="all-initial">
-        <img src="/images/github.png" alt="github" class="logo all-initial">
+      <a href="https://www.github.com/fredrikburmester">
+        <img src="/images/github.png" alt="github" class="logo dark:invert">
       </a>
     </div>
-    <div id="menu" class="menu all-initial">
-      <ul :style="menuLinkStyle" class="all-initial">
-        <li style="display: inline-block"  v-for="menu, i in menuLinks">
+    <div id="menu" class="menu bg-base-100">
+      <ul :style="menuLinkStyle" class="bg-base-100">
+        <li style="display: inline-block" v-for="menu, i in menuLinks">
           <a :class="linkClass(menu, i)" @click="goTo(menu)">{{menu}}</a>
         </li>
         <!-- <li class="upload">
@@ -62,6 +67,14 @@ export default {
       let urlPath = this.$route.path.split('/')[1]
       urlPath = urlPath.replace('%C3%B6', 'ö')
       this.active = urlPath
+
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'forest');
+        document.documentElement.classList.add('dark');
+        document.getElementById('darkmode-switch').checked = false;
+      } else {
+        document.getElementById('darkmode-switch').checked = true;
+      }
       
       if($nuxt.$route.path == '/404') {
         //
@@ -70,9 +83,10 @@ export default {
     methods: {
       linkClass: function (menu, i) {
         return {
-          'all-initial': true,
           'menuActive': menu == this.active,
-          'large': i < 3
+          'large': i < 3,
+          'dark:text-white': true,
+          'hover:text-base-300 dark:hover:text-accent': true
         }
       },
       goTo(menu) {
@@ -127,6 +141,32 @@ export default {
             line1.style.transform += "rotate(45deg)";
             line3.style.transform += "rotate(-45deg)";
         }
+      },
+      toggleDarkMode() {
+        console.log("run")
+        if (localStorage.getItem('theme')) {
+          if (localStorage.getItem('theme') === 'light') {
+              console.log("1")
+              document.documentElement.setAttribute('data-theme', 'forest');
+              document.documentElement.classList.add('dark');
+              localStorage.setItem('theme', 'dark');
+          } else {
+              console.log("2")
+              document.documentElement.setAttribute('data-theme', 'bumblebee');
+              document.documentElement.classList.remove('dark');
+              localStorage.setItem('theme', 'light');
+          }
+        } else {
+            if (document.documentElement.getAttribute('forest')) {
+                document.documentElement.setAttribute('data-theme', 'bumblebee');
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'forest');
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
       }
     }
 }
@@ -135,7 +175,6 @@ export default {
 <style>
 
 nav {
-  background-color: white;
   height: 90px;
   -webkit-transition: 1s linear;
   -moz-transition: 1s linear;
@@ -144,36 +183,32 @@ nav {
   transition: 1s linear;
   z-index: 1;
 }
+.swap {
+  transform: translateX(-7px);
+}
 .menuActive {
-  border-bottom: solid rgb(253, 187, 24);
-  border-width: 2px;
+  border-bottom: solid 2px rgb(253, 187, 24);
 }
 .menu ul {
   list-style-type: none;
 }
-.menu li {
-  padding: 1.1vh 0;
-}
-.menu a:hover {
-  color: #d3d3d3;
-  -webkit-transition: all 200ms linear;
-  -moz-transition: all 200ms linear;
-  -ms-transition: all 200ms linear;
-  -o-transition: all 200ms linear;
-  transition: all 200ms linear;
-}
+
 .menu a {
   display: inline-block;
   font-family: Avenir,Helvetica,Arial,sans-serif;
   font-weight: 700;
-  color: #131516;
   text-decoration: none;
   cursor: pointer;
-  -webkit-transition: all 300ms linear;
-  -moz-transition: all 300ms linear;
-  -ms-transition: all 300ms linear;
-  -o-transition: all 300ms linear;
-  transition: all 300ms linear;
+  -webkit-transition: all 100ms linear;
+  -moz-transition: all 100ms linear;
+  -ms-transition: all 100ms linear;
+  -o-transition: all 100ms linear;
+  transition: all 100ms linear;
+  padding: 0;
+  margin: 0;
+}
+.menu a:hover {
+  background-color: transparent;
 }
 .menu hr {
   color: transparent;
@@ -200,7 +235,6 @@ nav {
 }
 
 .line {
-  background-color: #131516;
   width: 25px;
   height: 3px;
   margin-bottom: 5px;
@@ -224,8 +258,8 @@ nav {
 
 .logo {
   padding: 10px;
-  width: 20px;
-  height: auto;
+  width: 40px;
+
   cursor: pointer;
 }
 
@@ -234,7 +268,6 @@ nav {
   top: 0;
   left: -450px;
   z-index: 2;
-  background-color: white;
   width: 450px;
   height: 100vh;
   display: flex;
@@ -246,7 +279,7 @@ nav {
   transition: all 300ms ease-in-out;
 }
 .large {
-  font-size: 1.7em;
+  font-size: 1.5em;
 }
 .small {
   font-size: 1.1em;
@@ -277,18 +310,7 @@ nav {
   transition: 300ms linear;
 }
 
-#title {
-  font-family: Open Sans, sans-serif;
-  font-size: 100px;
-  line-height: 100px;
-  font-weight: 400;
-  text-align: center;
-  letter-spacing: 18px;
-  margin-left: 18px;
-  margin-bottom: 0;
-  color: #131516;
-  cursor: pointer;
-}
+
 
 .information a {
   text-decoration: none;
@@ -342,7 +364,6 @@ nav {
 }
 
 .close-btn .line {
-  background-color: white;
   width: 25px;
   height: 3px;
   margin-bottom: 5px;

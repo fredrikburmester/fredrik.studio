@@ -1,7 +1,7 @@
 <template>
-    <div v-if="!loading">
+    <div v-if="!loading" class="bg-base-100">
         <NavBar />
-        <div class="page-container">
+        <div class="page-container bg-base-100">
 			<Content :album="album" />
             <Gallery :album="album" />
         </div>
@@ -48,6 +48,7 @@ export default {
 .page-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  transition: all 1s linear;
 }
 
 @media only screen and (max-width: 1000px) {

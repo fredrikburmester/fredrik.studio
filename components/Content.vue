@@ -1,10 +1,10 @@
 <template>
     <Transition name="fade">
         <div class="information lg:sticky">
-            <a href="/" id="title">FB</a>
-            <h1 id="subtitle">Photographer</h1>
-            <h1 id="album-name">{{ album }}</h1>
-            <p id="description">{{ description }}</p>
+            <a href="/" id="title" class="dark:text-white">FB</a>
+            <h1 id="subtitle" class="dark:text-white">Photographer</h1>
+            <h1 id="album-name" class="dark:text-white">{{ album }}</h1>
+            <p id="description" class="dark:text-white">{{ description }}</p>
         </div>
     </Transition>
 </template>
@@ -33,7 +33,18 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+#title {
+  font-family: Open Sans, sans-serif;
+  font-size: 100px;
+  line-height: 100px;
+  font-weight: 400;
+  text-align: center;
+  letter-spacing: 18px;
+  margin-left: 18px;
+  margin-bottom: 0;
+  cursor: pointer;
+}
 .page-container .information {
   display: grid;
   grid-template-rows: 100px 50px 100px;
