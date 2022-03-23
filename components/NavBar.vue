@@ -237,22 +237,11 @@ nav {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: start;
   -webkit-transition: all 300ms ease-in-out;
   -moz-transition: all 300ms ease-in-out;
   -ms-transition: all 300ms ease-in-out;
   -o-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
-}
-
-.menu-links {
-  /* display: grid;
-  margin-bottom: 20px;
-  text-align: left;
-  margin-top: 100px;
-  margin-left: 40px;
-  height: 100vh;
-  grid-template-rows: repeat(3, 60px) repeat(6, 40px); */
 }
 .large {
   font-size: 1.7em;
