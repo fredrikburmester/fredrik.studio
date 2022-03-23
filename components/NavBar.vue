@@ -59,8 +59,10 @@ export default {
       window.removeEventListener('scroll', this.navbarShadow);
     },
     mounted() {
-      this.active = this.$route.path.split('/')[1]
-
+      let urlPath = this.$route.path.split('/')[1]
+      urlPath = urlPath.replace('%C3%B6', 'ö')
+      this.active = urlPath
+      
       if($nuxt.$route.path == '/404') {
         //
       }
