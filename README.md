@@ -7,7 +7,7 @@ The point of this version of the website is to create a edge hosted version, com
 
 |Branch      |Environment|URL                                           |
 |------------|-----------|----------------------------------------------|
-|main        |prod       |https://d57e987b.fredrik-studio.pages.dev/    |
+|main        |prod       |https://f560d2ef.fredrik-studio.pages.dev/    |
 |development |dev        |                                              |
 
 ## Images
@@ -18,6 +18,9 @@ Images are stored and loaded from Cloudflare Images. Images are loaded in differ
 
 ### 🔥 Firebase 
 To keep track of which images belong to which album a firebase firestore is used. 
+
+### 🐌 Lazy loading
+Since this website utilizes cloudflares optimized images I'll be relying entirely on the native `loading="lazy"` for this website. 
 
 
 
