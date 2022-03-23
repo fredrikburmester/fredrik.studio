@@ -5,13 +5,11 @@
             <div @click="closeLightbox" class="close"></div>
             <div id="line1" class="line"></div>
             <div id="line2" class="line"></div>
-            <img v-show="!loading" @load="loading = false" :src="`https://imagedelivery.net/FYZsbuLae8g9R3ZwqoyBKQ/${image}/${quality}`" alt="" class="image">
-            <div class="loading-text">
-                <button v-if="loading" class="lowercase btn btn-ghost loading btn-lg text-white flex flex-col">
-                    <br>
-                    {{loadingText}}
-                </button>
-            </div>
+            <img v-show="!loading" @load="loading = true" :src="`https://imagedelivery.net/FYZsbuLae8g9R3ZwqoyBKQ/${image}/${quality}`" alt="" class="image">
+            <button v-if="loading" class="lowercase btn btn-ghost loading btn-lg text-white flex flex-col">
+                <br>
+                {{loadingText}}
+            </button>
         </div>
     <!-- </transition> -->
 </template>
@@ -33,7 +31,7 @@ export default {
             return {
                 loading: true,
                 loadingText: '',
-                loadingTexts: ["Optimizing quality...", "Sending files...", "Petting the cat...", "Downloading ram...", "Trying to fix whatever is broken...", "Ain't working chief..."]
+                loadingTexts: ["Optimizing quality...", "Sending files...", "Downloading ram...", "Trying to fix whatever is broken...", "Ain't working chief..."]
             }
     },
     created() {
@@ -46,7 +44,7 @@ export default {
         for (let i = 0; i < this.loadingTexts.length; i++) {
             setTimeout(() => {
                 this.loadingText = this.loadingTexts[i]
-            }, i * 1300)
+            }, i * 1400)
         }
     },
     methods: {
@@ -63,12 +61,6 @@ export default {
 </script>
 
 <style scoped>
-.loading-text {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
 .line {
     position: fixed;
     background-color: white;
