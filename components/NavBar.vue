@@ -143,15 +143,12 @@ export default {
         }
       },
       toggleDarkMode() {
-        console.log("run")
         if (localStorage.getItem('theme')) {
           if (localStorage.getItem('theme') === 'light') {
-              console.log("1")
               document.documentElement.setAttribute('data-theme', 'forest');
               document.documentElement.classList.add('dark');
               localStorage.setItem('theme', 'dark');
           } else {
-              console.log("2")
               document.documentElement.setAttribute('data-theme', 'bumblebee');
               document.documentElement.classList.remove('dark');
               localStorage.setItem('theme', 'light');
