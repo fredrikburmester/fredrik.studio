@@ -3,6 +3,13 @@ A new version of my photography website, this time made with Nuxt. ⛰️
 
 The point of this version of the website is to create a edge hosted version, completely relying on modern solutions from [Cloudflare](https://www.cloudflare.com/) and [Firebase](https://firebase.google.com/).
 
+## 🚀 Website
+
+|Branch      |Environment|URL                                           |
+|------------|-----------|----------------------------------------------|
+|main        |prod       |https://d57e987b.fredrik-studio.pages.dev/    |
+|development |dev        |                                              |
+
 ## Images
 Like in my [other photography website](https://github.com/fredrikburmester/fredrikburmester-express), image loading is a top priority. That's why this time i've tried to decentralize and use Cloudflare to deliver my photos. 
 
