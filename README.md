@@ -20,7 +20,7 @@ Images are stored and loaded from Cloudflare Images. Images are loaded in differ
 To keep track of which images belong to which album a firebase firestore is used. 
 
 ### 🐌 Lazy loading
-Since this website usilizes cloudflares optimized images I'll be relying entirely on the native `loading="lazy"` for this website. 
+Since this website utilizes cloudflares optimized images I'll be relying entirely on the native `loading="lazy"` for this website. 
 
 
 
