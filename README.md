@@ -7,7 +7,7 @@ The point of this version of the website is to create a edge hosted version, com
 
 |Branch      |Environment|URL                                           |
 |------------|-----------|----------------------------------------------|
-|main        |prod       |https://d57e987b.fredrik-studio.pages.dev/    |
+|main        |prod       |https://f560d2ef.fredrik-studio.pages.dev/    |
 |development |dev        |                                              |
 
 ## Images
