@@ -5,7 +5,11 @@
             <div id="line1" class="line"></div>
             <div id="line2" class="line"></div>
             <img v-show="!loading" @load="loading = false" :src="`https://imagedelivery.net/FYZsbuLae8g9R3ZwqoyBKQ/${image}/${quality}`" alt="" class="image">
-            <button v-if="loading" class="btn btn-ghost loading btn-lg text-white"></button>
+            <button v-if="loading" class="btn btn-ghost loading btn-lg text-white flex flex-col">
+            <br>
+            {{loadingText}}
+            </button>
+            
         </div>
     </div>
 </template>
@@ -23,16 +27,25 @@ export default {
                 default: 'high'
 			}
     },
+    data() {
+            return {
+                loading: true,
+                loadingText: '',
+                loadingTexts: ["Optimizing quality...", "Compressing files... ", "Sending files...", "Petting the cat...", "Downloading ram...", "Trying to fix whatever is broken...", "Okay this is taking too long... Try again."]
+            }
+    },
     created() {
         window.addEventListener('keyup', this.keypress);
     },
     beforeDestroy() {
         window.removeEventListener('keyup', this.keypress);
     },
-    data() {
-			return {
-				loading: true,
-			}
+    mounted() {
+        for (let i = 0; i < this.loadingTexts.length; i++) {
+            setTimeout(() => {
+                this.loadingText = this.loadingTexts[i]
+            }, i * 1000)
+        }
     },
     methods: {
 			closeLightbox() {
