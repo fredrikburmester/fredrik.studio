@@ -1,9 +1,17 @@
 # fredrik.studio
-A new version of my photography website, this time made with Nuxt.
+A new version of my photography website, this time made with Nuxt. ⛰️
 
-The point of this version of the website is to create a edge hosted version, completely relying on modern solutions to host the website. 
+The point of this version of the website is to create a edge hosted version, completely relying on modern solutions from [Cloudflare](https://www.cloudflare.com/) and [Firebase](https://firebase.google.com/).
 
 ## Images
-This website feaures loading images from cloudflares edge servers. Images are loaded in different variants depending on the use case. All variants are served by cloudflare images. 
+Like in my [other photography website](https://github.com/fredrikburmester/fredrikburmester-express), image loading is a top priority. That's why this time i've tried to decentralize and use Cloudflare to deliver my photos. 
 
+### Cloudflare ☁️
+Images are stored and loaded from Cloudflare Images. Images are loaded in different variants depending on the use case. 
+
+### Firebase 🔥
 To keep track of which images belong to which album a firebase firestore is used. 
+
+
+
+
