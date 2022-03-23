@@ -5,7 +5,7 @@
             <div @click="closeLightbox" class="close"></div>
             <div id="line1" class="line"></div>
             <div id="line2" class="line"></div>
-            <img v-show="!loading" @load="loading = true" :src="`https://imagedelivery.net/FYZsbuLae8g9R3ZwqoyBKQ/${image}/${quality}`" alt="" class="image">
+            <img v-show="!loading" @load="loading = false" :src="`https://imagedelivery.net/FYZsbuLae8g9R3ZwqoyBKQ/${image}/${quality}`" alt="" class="image">
             <button v-if="loading" class="lowercase btn btn-ghost loading btn-lg text-white flex flex-col">
                 <br>
                 {{loadingText}}
