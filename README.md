@@ -5,10 +5,10 @@ The point of this version of the website is to create a edge hosted version, com
 
 ## 🚀 Website
 
-|Branch      |Environment|URL                                           |
-|------------|-----------|----------------------------------------------|
-|main        |prod       |https://e45d0736.fredrik-studio.pages.dev/    |
-|development |dev        |                                              |
+|Branch      |Environment|URL                           |
+|------------|-----------|------------------------------|
+|main        |prod       |https://dev.fredrik.studio    |
+|development |dev        |                              |
 
 ## Images
 Like in my [other photography website](https://github.com/fredrikburmester/fredrikburmester-express), image loading is a top priority. That's why this time i've tried to decentralize and use Cloudflare to deliver my photos. 
