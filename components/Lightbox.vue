@@ -1,17 +1,19 @@
 <template>
-    <div>
+    <!-- <transition name="fade" mode="out-in"> -->
         <div class="background">
+            <div @click="closeLightbox" class="w-screen h-screen fixed top-0 left-0 z-1 cursor-pointer"></div>
             <div @click="closeLightbox" class="close"></div>
             <div id="line1" class="line"></div>
             <div id="line2" class="line"></div>
             <img v-show="!loading" @load="loading = false" :src="`https://imagedelivery.net/FYZsbuLae8g9R3ZwqoyBKQ/${image}/${quality}`" alt="" class="image">
-            <button v-if="loading" class="btn btn-ghost loading btn-lg text-white flex flex-col">
-            <br>
-            {{loadingText}}
-            </button>
-            
+            <div class="loading-text">
+                <button v-if="loading" class="lowercase btn btn-ghost loading btn-lg text-white flex flex-col">
+                    <br>
+                    {{loadingText}}
+                </button>
+            </div>
         </div>
-    </div>
+    <!-- </transition> -->
 </template>
 <script>
 export default {
@@ -31,7 +33,7 @@ export default {
             return {
                 loading: true,
                 loadingText: '',
-                loadingTexts: ["Optimizing quality...", "Compressing files... ", "Sending files...", "Petting the cat...", "Downloading ram...", "Trying to fix whatever is broken...", "Okay this is taking too long... Try again."]
+                loadingTexts: ["Optimizing quality...", "Sending files...", "Petting the cat...", "Downloading ram...", "Trying to fix whatever is broken...", "Ain't working chief..."]
             }
     },
     created() {
@@ -44,7 +46,7 @@ export default {
         for (let i = 0; i < this.loadingTexts.length; i++) {
             setTimeout(() => {
                 this.loadingText = this.loadingTexts[i]
-            }, i * 1000)
+            }, i * 1300)
         }
     },
     methods: {
@@ -61,6 +63,12 @@ export default {
 </script>
 
 <style scoped>
+.loading-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 .line {
     position: fixed;
     background-color: white;
@@ -109,5 +117,16 @@ export default {
     z-index: 4;
     max-width: 92vw;
     max-height: 92vh;
+}
+
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s linear;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
