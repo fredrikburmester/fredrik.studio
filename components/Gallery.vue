@@ -1,15 +1,13 @@
 <template>
   <div v-if="!loading" id="gallery" class="gallery">
-		<div v-for="image, index in images" :key="image" class="gallery-image-container">
-				<img @click="openLightbox(image)" width="300" height="500" class="gallery-image" style="opacity: 0" @load="onImgLoad" :src="`https://imagedelivery.net/FYZsbuLae8g9R3ZwqoyBKQ/${image}/${imageFormat}`" :style="index < 5 ? 'opcaity: 1' : 'opacity: 0'" loading="lazy"/>
+		<div v-for="image, index in imageArray" :key="image" class="gallery-image-container">
+				<img @click="openLightbox(image)" width="300" height="500" class="gallery-image" style="opacity: 0" @load="onImgLoad" @error="onImgError"  :src="`https://imagedelivery.net/FYZsbuLae8g9R3ZwqoyBKQ/${image}/${imageFormat}`" :style="index < 5 ? 'opcaity: 1' : 'opacity: 0'" loading="lazy"/>
 		</div>
     <Lightbox @close="closeLightbox" @wheel.prevent @touchmove.prevent @scroll.prevent v-if="lightboxOpen" :image="selectedImage" />
 	</div>
 </template>
 
 <script>
-import { db } from "~/plugins/firebase.js"
-import { doc, setDoc, getDoc } from 'firebase/firestore'
 import Lightbox from "~/components/Lightbox.vue"
 
 export default {
@@ -22,19 +20,19 @@ export default {
             type: String,
             required: false
         },
+        imageArray: {
+            type: Array,
+            required: true
+        },
     },
     data() {
         return {
             loading: true,
-            images: [],
             width: screen.width,
             imageFormat: 'thumb',
             lightboxOpen: false,
             selectedImage: '',
         }
-    },
-    created() {
-        this.getFromFirestore()
     },
     async mounted() {
         if (this.width > 500) {
@@ -42,7 +40,7 @@ export default {
         } else {
             this.imageFormat = 'thumb'
         }
-        
+        this.loading = false
     },
     methods: {
       openLightbox(image) {
@@ -52,20 +50,6 @@ export default {
       closeLightbox() {
         this.lightboxOpen = false
         this.selectedImage = ''
-
-      },
-      async getFromFirestore() {
-          const ref = doc(db, "album", this.album)
-          
-          try {
-              const doc = await getDoc(ref)
-              var images = doc.data().photos
-              images.reverse()
-              this.images = images
-              this.loading = false
-          } catch (e) {
-              console.log("[getFromFireStore]:",e)
-          }
       },
       onImgLoad(e) {
           let image = e.target
@@ -77,7 +61,10 @@ export default {
               parent.classList.add("tall")
           }
           image.style.opacity = 1
-      }
+      },
+      onImgError(e) {
+          this.$store.commit('error', 'Image not found')
+      },
     },
 }
 </script>
