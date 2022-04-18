@@ -1,9 +1,11 @@
 <template>
-  <NavBar />
-  <div class="bg-base-100">
-    <div class="page-container bg-base-100">
-      <Content v-if="found" :album="album" />
-      <Gallery v-if="!loading" :album="album" :imageArray="images" />
+  <div>
+    <NavBar />
+    <div class="bg-base-100">
+      <div class="page-container bg-base-100">
+        <Content v-if="found" :album="album" />
+        <Gallery v-if="!loading" :album="album" :imageArray="images" />
+      </div>
     </div>
   </div>
 </template>

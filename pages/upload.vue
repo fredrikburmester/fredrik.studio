@@ -1,48 +1,50 @@
 <template>
-  <NavBar />
-  <div class="px-8">
-    <h1 class="title text-3xl font-bold max-w-sm">Upload photos</h1>
-    <p class="text-md">Don't do this if you're not Fredrik 😆</p>
-    <div class="form-control flex flex-col gap-4">
-      <div>
-        <label class="label">
-          <span class="label-text">Token</span>
-        </label>
-        <input
-          v-model="token"
-          type="password"
-          placeholder="Type here"
-          class="input input-bordered w-full max-w-xs"
-        />
+  <div>
+    <NavBar />
+    <div class="px-8">
+      <h1 class="title text-3xl font-bold max-w-sm">Upload photos</h1>
+      <p class="text-md">Don't do this if you're not Fredrik 😆</p>
+      <div class="form-control flex flex-col gap-4">
+        <div>
+          <label class="label">
+            <span class="label-text">Token</span>
+          </label>
+          <input
+            v-model="token"
+            type="password"
+            placeholder="Type here"
+            class="input input-bordered w-full max-w-xs"
+          />
+        </div>
+        <div>
+          <label class="label">
+            <span class="label-text">Choose photo</span>
+          </label>
+          <input
+            type="file"
+            name="photo"
+            id="photo"
+            @change="updatePhoto"
+            multiple="true"
+          />
+        </div>
+        <div>
+          <label class="label">
+            <span class="label-text">Select album</span>
+          </label>
+          <select v-model="album" class="select w-full max-w-xs select-accent">
+            <option disabled>Select album...</option>
+            <option :value="a" v-for="a in albums">{{ a }}</option>
+          </select>
+        </div>
+        <button v-if="!uploading" class="btn btn-success w-24" @click="upload">
+          Upload
+        </button>
+        <button v-else class="btn btn-success loading w-24"></button>
+        <p class="text-primary" v-if="uploading">{{ done }} uploaded...</p>
+        <p class="text-error" v-if="error">{{ error }}</p>
+        <p class="text-success" v-if="success">{{ success }}</p>
       </div>
-      <div>
-        <label class="label">
-          <span class="label-text">Choose photo</span>
-        </label>
-        <input
-          type="file"
-          name="photo"
-          id="photo"
-          @change="updatePhoto"
-          multiple="true"
-        />
-      </div>
-      <div>
-        <label class="label">
-          <span class="label-text">Select album</span>
-        </label>
-        <select v-model="album" class="select w-full max-w-xs select-accent">
-          <option disabled>Select album...</option>
-          <option :value="a" v-for="a in albums">{{ a }}</option>
-        </select>
-      </div>
-      <button v-if="!uploading" class="btn btn-success w-24" @click="upload">
-        Upload
-      </button>
-      <button v-else class="btn btn-success loading w-24"></button>
-      <p class="text-primary" v-if="uploading">{{ done }} uploaded...</p>
-      <p class="text-error" v-if="error">{{ error }}</p>
-      <p class="text-success" v-if="success">{{ success }}</p>
     </div>
   </div>
 </template>
