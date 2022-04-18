@@ -1,36 +1,38 @@
 <template>
+  <div>
     <Transition name="fade">
-        <div class="information lg:sticky">
-            <a href="/" id="title" class="dark:text-white">FB</a>
-            <h1 id="subtitle" class="dark:text-white">Photographer</h1>
-            <h1 id="album-name" class="dark:text-white">{{ album }}</h1>
-            <p id="description" class="dark:text-white">{{ description }}</p>
-        </div>
+      <div class="information lg:sticky">
+        <a href="/" id="title" class="dark:text-white">FB</a>
+        <h1 id="subtitle" class="dark:text-white">Photographer</h1>
+        <h1 id="album-name" class="dark:text-white">{{ album }}</h1>
+        <p id="description" class="dark:text-white">{{ description }}</p>
+      </div>
     </Transition>
+  </div>
 </template>
 
 <script>
 export default {
-    name: 'Content',
-    props: {
-        album: {
-            type: String,
-            required: true
-        },
-        description: {
-            type: String,
-            required: false
-        }
+  name: "Content",
+  props: {
+    album: {
+      type: String,
+      required: true,
     },
-    data () {
-        return {
-        //
-        }
+    description: {
+      type: String,
+      required: false,
     },
-    methods: {
-        //
-    }
-}
+  },
+  data() {
+    return {
+      //
+    };
+  },
+  methods: {
+    //
+  },
+};
 </script>
 
 <style scoped>
@@ -51,15 +53,14 @@ export default {
   place-content: center;
   align-self: self-start;
   height: calc(100vh - 180px);
-	top: 90px;
-
+  top: 90px;
 }
 
 @media only screen and (max-width: 1000px) {
-	.page-container .information {
-		height: auto;
-		margin-top: 30px;
-	}
+  .page-container .information {
+    height: auto;
+    margin-top: 30px;
+  }
 }
 
 .page-container .information h1 {
