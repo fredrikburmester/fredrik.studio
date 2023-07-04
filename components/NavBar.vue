@@ -51,9 +51,7 @@ watch(() => y.value, () => {
   if (y.value > 50) {
     opacity = (y.value - 50) / 100
   }
-
   if(opacity > 1) opacity = 1
-
   if(title.value)
     title.value.style.opacity = opacity
 })
