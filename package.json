@@ -9,17 +9,26 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint:js": "eslint --ext \".ts,.vue\" --ignore-path .eslintignore .",
+    "lint:prettier": "prettier --check . --ignore-path .prettierignore",
+    "lint": "yarn lint:js && yarn lint:prettier",
+    "lintfix": "prettier --write --list-different . --ignore-path .prettierignore && yarn lint:js --fix"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxt/image": "^1.0.0-rc.1",
     "@nuxthq/ui": "^2.5.0",
+    "@types/body-scroll-lock": "^3.1.0",
     "@types/node": "^18",
     "nuxt": "^3.6.1"
   },
   "dependencies": {
     "@vueuse/nuxt": "^10.2.1",
-    "body-scroll-lock": "^4.0.0-beta.0"
+    "body-scroll-lock": "^4.0.0-beta.0",
+    "eslint": "^8.44.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.8"
   }
 }

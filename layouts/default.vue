@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NuxtLoadingIndicator color="yellow" />
+    <NuxtLoadingIndicator color="#FACC14" />
     <Navbar />
     <ScrollToTop />
     <slot />
