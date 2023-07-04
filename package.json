@@ -16,5 +16,7 @@
     "nuxt": "^3.6.1"
   },
   "dependencies": {
+    "@vueuse/nuxt": "^10.2.1",
+    "body-scroll-lock": "^4.0.0-beta.0"
   }
 }
