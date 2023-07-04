@@ -78,7 +78,6 @@ watch(() => y.value, () => {
         'capitalize text-xl font-bold ml-6 opacity-0 text-black',
       ]"
     >{{ $route.params.album }}</p>
-    <UIcon name="i-uil-facebook-f" size="48" />
 
     <USlideover v-model="isOpen" side="left">
       <div class="flex flex-col mx-4 md:mx-8 my-6">
