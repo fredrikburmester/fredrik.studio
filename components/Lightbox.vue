@@ -1,140 +1,78 @@
-<template>
-  <!-- <transition name="fade" mode="out-in"> -->
-  <div class="background">
-    <div
-      @click="closeLightbox"
-      class="w-screen h-screen fixed top-0 left-0 z-1 cursor-pointer"
-    ></div>
-    <div @click="closeLightbox" class="close"></div>
-    <div id="line1" class="line"></div>
-    <div id="line2" class="line"></div>
-    <img
-      v-show="!loading"
-      @load="loading = false"
-      :src="image"
-      alt=""
-      class="image"
-    />
-    <button
-      v-if="loading"
-      class="lowercase btn btn-ghost loading btn-lg text-white flex flex-col"
-    >
-      <br />
-      {{ loadingText }}
-    </button>
-  </div>
-  <!-- </transition> -->
-</template>
-<script>
-export default {
-  name: "Lightbox",
-  props: {
-    image: {
-      type: String,
-      required: true,
-    },
-    quality: {
-      type: String,
-      required: false,
-      default: "high",
-    },
-  },
-  data() {
-    return {
-      loading: true,
-      loadingText: "",
-      loadingTexts: [
-        "Optimizing quality...",
-        "Downloading image...",
-        "Slow internet?",
-        "Ain't working chief...",
-        "Somethings broken...",
-      ],
-    };
-  },
-  created() {
-    window.addEventListener("keyup", this.keypress);
-  },
-  beforeDestroy() {
-    window.removeEventListener("keyup", this.keypress);
-  },
-  mounted() {
-    for (let i = 0; i < this.loadingTexts.length; i++) {
-      setTimeout(() => {
-        this.loadingText = this.loadingTexts[i];
-      }, i * 1500);
+<script lang="ts" setup>
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
+
+const emit = defineEmits(['close', 'next', 'previous'])
+const props = defineProps<{
+  isOpen: boolean
+  image: string
+  album: string
+}>()
+
+const url = computed(() => {
+  return `https://cdn.fredrik.studio/albums/${props.album}/${props.image}`
+})
+
+async function downloadImage() {
+  // Go to url 
+  window.open(url.value, '_blank')
+}
+
+const loadingDownload = ref(false)
+
+const loaded = ref(false)
+
+watch(() => props.image, () => {
+  loaded.value = false
+})
+
+watch(() => props.isOpen, () => {
+  if(props.isOpen) {
+    disableBodyScroll(document.body)
+  } else {
+    enableBodyScroll(document.body)
+  }
+})
+
+// Add event listners for left and right arrow keys
+onMounted(() => {
+  window.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowLeft') {
+      emit('previous')
+    } else if(e.key === 'ArrowRight') {
+      emit('next')
+    } else if (e.key === 'Escape') {
+      emit('close')
     }
-  },
-  methods: {
-    closeLightbox() {
-      this.$emit("close");
-    },
-    keypress(e) {
-      if (e.keyCode === 27) {
-        this.closeLightbox();
-      }
-    },
-  },
-};
+  })
+})
+
 </script>
 
+<template>
+  <div v-if="isOpen" class="fixed top-0 left-0 backdrop-brightness-[0.5] backdrop-blur-xl w-screen h-screen grid place-items-center z-50">
+    <UIcon @click="$emit('close')" name="i-heroicons-x-mark" class="cursor-pointer text-2xl fixed top-0 right-0 m-4 md:m-8 text-white" />
+    <img v-show="loaded" :src="url" alt="" class="max-w-[90vw] max-h-[90vh]" @load="loaded = true">
+    <UIcon v-show="!loaded" name="i-heroicons-arrow-path" class="animate-spin text-2xl text-white" />
+    <div @click="downloadImage" class="fixed bottom-0 left-0 m-4 md:m-8 text-black bg-white shadow-md rounded-full px-4 py-2 cursor-pointer hover:opacity-75 transition-all">
+      <UIcon v-if="loadingDownload" name="i-heroicons-arrow-path" class="animate-spin" />
+      <span v-else>Download</span>
+    </div>
+    <div class="flex flex-row fixed bottom-0 right-0 m-4 md:m-8 gap-2">
+      <div @click="$emit('previous')" class=" text-black bg-white shadow-md rounded-full w-10 h-10 cursor-pointer hover:opacity-75 transition-all grid place-items-center">
+        <UIcon name="i-heroicons-arrow-left" class="" />
+      </div>
+      <div @click="$emit('next')" class=" text-black bg-white shadow-md rounded-full w-10 h-10 cursor-pointer hover:opacity-75 transition-all grid place-items-center">
+        <UIcon name="i-heroicons-arrow-right" class="" />
+      </div>
+    </div>
+  </div>
+</template>
+
 <style scoped>
-.line {
-  position: fixed;
-  background-color: white;
-  top: 40px;
-  right: 40px;
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
 }
-.close:hover ~ .line {
-  background-color: rgb(253, 187, 24);
-  /* box-shadow: 0 0 10px white; */
-}
-#line1 {
-  transform: rotate(45deg);
-  height: 2px;
-  width: 30px;
-}
-#line2 {
-  transform: rotate(-45deg);
-  height: 2px;
-  width: 30px;
-}
-.close {
-  position: fixed;
-  top: 20px;
-  right: 30px;
-  width: 50px;
-  height: 50px;
-  z-index: 99;
-  cursor: pointer;
-}
-
-.background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.9);
-  backdrop-filter: blur(3px);
-  z-index: 3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.image {
-  z-index: 4;
-  max-width: 92vw;
-  max-height: 92vh;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s linear;
-}
-
-.fade-enter-from,
-.fade-leave-to {
+.fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
 </style>
