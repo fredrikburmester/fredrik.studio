@@ -25,16 +25,27 @@ const links = [
 
 <template>
   <div
-    class="bg w-[100svw] h-[100svh] overflow-hidden flex flex-col justify-end relative z-0"
+    class="bg w-[100svw] h-[100svh] overflow-hidden flex flex-col items-center relative z-0 pt-20"
   >
-    <div class="gap-8 w-screen py-4 md:py-8">
+    <div class="px-4 md:px-8 flex flex-col gap-4 md:gap-8 items-center py-4 md:py-8 text-center">
       <div
-        class="flex flex-row gap-4 md:gap-8 overflow-x-scroll w-full shrink-0 px-4 md:px-8 snap-mandatory snap-x"
+        class="rounded-full shadow-md overflow-hidden grid w-36 h-36"
+      >
+        <img src="https://cdn.fredrik.studio/albums/home/2.jpg" alt="" />
+      </div>
+      <div>
+        <h1 class="text-8xl md:text-9xl capitalize mb-2">FB</h1>
+        <p class="uppercase text-xl md:text-2xl text-gray-500">photographer</p>
+      </div>
+    </div>
+    <div class="gap-8 w-screen py-4 md:py-8 h-full">
+      <div
+        class="flex flex-row gap-4 md:gap-8 overflow-x-scroll w-full shrink-0 px-4 md:px-8 snap-mandatory snap-x h-full"
       >
         <nuxt-link
           v-for="l in links"
           :to="l.to"
-          class="snap-center hover:opacity-90 group transition-all shadow-lg rounded-lg w-[80vw] h-[40vh] md:w-96 overflow-hidden flex items-end relative shrink-0"
+          class="snap-center hover:opacity-90 group transition-all shadow-lg rounded-lg w-[80vw] h-fill md:w-[30vw] overflow-hidden flex items-end relative shrink-0"
         >
           <p class="font-bold z-10 m-4 md:m-8 text-white text-4xl">
             {{ l.label }}

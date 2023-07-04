@@ -7,6 +7,9 @@ const links = [
   {
     label: "Home",
     to: "/",
+    click: () => {
+      isOpen.value = false;
+    },
   },
   {
     label: "Portraits",
@@ -35,6 +38,12 @@ const links = [
     badge: "Location",
   },
   {
+    label: "Berlin",
+    to: "/berlin",
+    icon: "i-heroicons-globe-europe-africa",
+    badge: "Location",
+  },
+  {
     label: "Krug",
     to: "/krug",
     badge: "Wedding",
@@ -47,10 +56,6 @@ const links = [
   {
     label: "Pets",
     to: "/pets",
-  },
-  {
-    label: "Contact",
-    to: "/contact",
   },
 ];
 
@@ -90,7 +95,7 @@ watch(
     />
     <p
       ref="title"
-      :class="['capitalize text-xl font-bold ml-6 opacity-0 text-black']"
+      :class="['capitalize text-xl font-bold ml-4 md:ml-6 opacity-0 text-black']"
     >
       {{ $route.params.album }}
     </p>
@@ -116,6 +121,8 @@ watch(
             padding: 'py-1.5 px-0',
           }"
         />
+        <hr class="my-8">
+        <nuxt-link @click="isOpen = false" class="" to="/contact">Contact me</nuxt-link>
       </div>
     </USlideover>
   </div>

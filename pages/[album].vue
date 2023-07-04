@@ -91,11 +91,11 @@ const prevImage = () => {
     </div>
     <div
       v-if="pending"
-      class="place-self-center h-[70vh] grid place-items-center"
+      class="place-self-center h-[50vh] grid place-items-center"
     >
       <UIcon name="i-heroicons-arrow-path" class="animate-spin text-4xl" />
     </div>
-    <div v-if="!pending" class="gallery">
+    <div v-if="!pending" class="gallery gap-4 md:gap-8">
       <div
         v-for="(image, index) in data"
         :id="image"
@@ -133,7 +133,6 @@ const prevImage = () => {
   grid-template-columns: 1fr 1fr;
   align-items: center;
   grid-auto-flow: dense;
-  gap: 2rem;
 }
 
 .gallery-container img {
