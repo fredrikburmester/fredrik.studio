@@ -115,7 +115,7 @@ const prevImage = () => {
   grid-template-columns: 1fr 1fr;
   align-items: center;
   grid-auto-flow: dense;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .gallery-container img {
