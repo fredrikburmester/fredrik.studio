@@ -90,8 +90,8 @@ const seoImage = computed(() => {
 useSeoMeta({
   title: 'FB - ' + capitalizedAlbum.value,
   ogTitle: 'Fredrik Burmester',
-  description: album.value.toUpperCase(),
-  ogDescription: album.value.toUpperCase(),
+  description: capitalizedAlbum,
+  ogDescription: capitalizedAlbum,
   ogImage: seoImage.value,
 })
 </script>
@@ -147,7 +147,6 @@ useSeoMeta({
           </div>
         </div>
       </ClientOnly>
-
     </div>
 
     <Lightbox
