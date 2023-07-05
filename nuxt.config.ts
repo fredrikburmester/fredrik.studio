@@ -6,4 +6,7 @@ export default defineNuxtConfig({
     preference: "light",
   },
   plugins: [{ src: '~/plugins/vercel.ts', mode: 'client' }],
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' }
+  },
 });
