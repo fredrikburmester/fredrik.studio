@@ -7,7 +7,7 @@ const { y } = useWindowScroll();
 const { width } = useWindowSize();
 
 const { data, pending } = await useFetch<string[]>(
-  () => "/api/albums?album=" + route.params.album,
+  () => "/api/albums?album=" + route.params.album.toString().toLowerCase(),
   {
     server: false,
   }
