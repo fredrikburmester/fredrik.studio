@@ -2,6 +2,8 @@
 useSeoMeta({
   title: 'FB - Contact',
   ogTitle: 'Fredrik Burmester',
+  description: 'Contact me',
+  ogDescription: 'Contact me',
   ogImage: `https://cdn.fredrik.studio/albums/home/thumbs/2.jpg`,
 })
 </script>

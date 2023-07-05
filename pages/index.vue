@@ -25,6 +25,8 @@ const links = [
 useSeoMeta({
   title: 'FB - Home',
   ogTitle: 'Fredrik Burmester',
+  description: 'Photographer',
+  ogDescription: 'Photographer',
   ogImage: `https://cdn.fredrik.studio/albums/home/thumbs/2.jpg`,
 })
 </script>

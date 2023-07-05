@@ -77,12 +77,22 @@ const prevImage = () => {
   }
 };
 
+const seoImage = computed(() => {
+  if (data.value) {
+    return "https://cdn.fredrik.studio/albums/" +
+      album.value +
+      "/" +
+      data.value[0];
+  }
+  return ''
+})
+
 useSeoMeta({
   title: 'FB - ' + capitalizedAlbum.value,
   ogTitle: 'Fredrik Burmester',
   description: album.value.toUpperCase(),
   ogDescription: album.value.toUpperCase(),
-  ogImage: `https://cdn.fredrik.studio/albums/${album.value}/thumbs/${image.value}`,
+  ogImage: seoImage.value,
 })
 </script>
 
