@@ -5,4 +5,5 @@ export default defineNuxtConfig({
   colorMode: {
     preference: "light",
   },
+  plugins: [{ src: '~/plugins/vercel.ts', mode: 'client' }],
 });
