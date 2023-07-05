@@ -27,7 +27,7 @@ const image = computed(() => {
 });
 
 const album = computed(() => {
-  return route.params.album as string;
+  return route.params.album.toString().toLowerCase() as string;
 });
 
 const imageLoaded = (e: Event) => {
