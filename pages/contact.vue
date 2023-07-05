@@ -1,6 +1,6 @@
 <script lang="ts" setup></script>
 <template>
-  <div class="px-4 md:px-8 pt-24 md:ml-[10vw]">
+  <div class="px-4 md:px-8 pt-24 md:ml-[5vw]">
     <div class="md:fixed md:top-[calc(50vh-100px)] h-100">
       <UButton label="Home" color="amber" class="mb-4" to="/">
         <template #leading>

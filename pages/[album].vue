@@ -78,8 +78,8 @@ const prevImage = () => {
 </script>
 
 <template>
-  <UContainer :ui="{ constrained: 'md:ml-[10vw]' }" class="pb-4 grid md:grid-cols-2 pt-24">
-    <div class="pb-8 md:sticky md:top-[calc(50vh-100px)] md:h-[100vh]">
+  <UContainer :ui="{ constrained: '' }" class="pb-4 grid md:grid-cols-2 pt-24">
+    <div class="pb-8 md:fixed md:top-[calc(50vh-100px)] w-full md:pl-[5vw]">
       <UButton label="Home" color="amber" class="mb-4" to="/">
         <template #leading>
           <UIcon name="i-heroicons-arrow-left-20-solid" />
@@ -88,7 +88,7 @@ const prevImage = () => {
       <h1
         ref="title"
         :class="[
-          'text-6xl md:text-8xl font-bold capitalize mb-2 origin-bottom-left',
+          'text-6xl md:text-[5vw] font-bold capitalize mb-2 origin-bottom-left',
         ]"
       >
         {{ $route.params.album }}
@@ -97,14 +97,14 @@ const prevImage = () => {
         <UBadge color="amber">{{ data?.length }} images</UBadge>
       </div>
     </div>
-    <div>
+    <div class="md:col-start-2">
       <div
-        v-if="pending"
-        class="place-self-center h-[50vh] grid place-items-center"
+        v-if="false"
+        class="items-center justify-center flex"
       >
         <UIcon name="i-heroicons-arrow-path" class="animate-spin text-4xl" />
       </div>
-      <div v-if="!pending" class="gallery gap-4 md:gap-8">
+      <div v-else-if="!pending" class="gallery gap-4 md:gap-8">
         <div
           v-for="(image, index) in data"
           :id="image"
