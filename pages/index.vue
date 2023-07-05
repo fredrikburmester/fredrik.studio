@@ -25,16 +25,11 @@ const links = [
 
 <template>
   <div
-    class="bg w-[100svw] h-[100svh] overflow-hidden flex flex-col items-center relative z-0 pt-20"
+    class="bg w-[100svw] h-[100svh] overflow-hidden flex flex-col items-start relative z-0 pt-20"
   >
-    <div class="px-4 md:px-8 flex flex-col gap-4 md:gap-8 items-center py-4 md:py-8 text-center">
-      <div
-        class="rounded-full shadow-md overflow-hidden grid w-36 h-36"
-      >
-        <img src="https://cdn.fredrik.studio/albums/home/2.jpg" alt="" />
-      </div>
+    <div class="px-4 md:px-8 flex flex-col gap-4 md:gap-8 items-center py-4 md:py-8 text-left">
       <div>
-        <h1 class="text-8xl md:text-9xl capitalize mb-2">FB</h1>
+        <h1 class="text-6xl md:text-7xl capitalize mb-2 font-bold">Fredrik Burmester</h1>
         <p class="uppercase text-xl md:text-2xl text-gray-500">photographer</p>
       </div>
     </div>

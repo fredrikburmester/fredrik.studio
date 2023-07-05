@@ -84,7 +84,7 @@ watch(
 <template>
   <div
     :class="[
-      'fixed w-screen top-0 flex flex-row py-6 px-4 md:px-8 transition-all z-10 bg-white',
+      'fixed w-screen top-0 flex flex-row py-4 px-4 md:px-8 transition-all z-10 bg-white items-center',
       y > 25 && ' shadow-sm bg-white',
     ]"
   >
@@ -99,6 +99,9 @@ watch(
     >
       {{ $route.params.album }}
     </p>
+    <NuxtLink class="ml-auto" to="/contact">
+      <UAvatar size="md" src="https://cdn.fredrik.studio/albums/home/2.jpg" />
+    </NuxtLink>
 
     <USlideover v-model="isOpen" side="left">
       <div class="flex flex-col mx-4 md:mx-8 my-6">
