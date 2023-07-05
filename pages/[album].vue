@@ -6,11 +6,8 @@ import { useWindowSize } from "@vueuse/core";
 const { y } = useWindowScroll();
 const { width } = useWindowSize();
 
-const { data, pending } = await useFetch<string[]>(
+const { data, pending, error } = useFetch<string[]>(
   () => "/api/albums?album=" + route.params.album.toString().toLowerCase(),
-  {
-    server: false,
-  }
 );
 
 const index = ref();
@@ -75,11 +72,24 @@ const prevImage = () => {
     index.value--;
   }
 };
+
+// Add head SEO stuff
+useSeoMeta({
+  title: 'FB',
+  ogTitle: 'Fredrik Burmester',
+  description: album.value.toUpperCase(),
+  ogDescription: album.value.toUpperCase(),
+  ogImage: `https://cdn.fredrik.studio/albums/${album}/thumbs/${image}`,
+})
+
+useHead({
+  meta: [{ property: 'og:title', content: `FB - ${album.value.toUpperCase()}` }]
+})
 </script>
 
 <template>
   <UContainer :ui="{ constrained: '' }" class="pb-4 grid md:grid-cols-2 pt-24">
-    <div class="pb-8 md:fixed md:top-[calc(50vh-100px)] w-full md:pl-[5vw]">
+    <div class="md:fixed md:top-[calc(50vh-100px)] w-full md:pl-[5vw] pb-4">
       <UButton label="Home" color="amber" class="mb-4" to="/">
         <template #leading>
           <UIcon name="i-heroicons-arrow-left-20-solid" />
@@ -93,38 +103,42 @@ const prevImage = () => {
       >
         {{ $route.params.album }}
       </h1>
-      <div>
-        <UBadge color="amber">{{ data?.length }} images</UBadge>
+      <div v-if="data">
+        <UBadge color="amber">{{ data.length }} images</UBadge>
       </div>
     </div>
     <div class="md:col-start-2">
-      <div
-        v-if="false"
-        class="items-center justify-center flex"
-      >
-        <UIcon name="i-heroicons-arrow-path" class="animate-spin text-4xl" />
-      </div>
-      <div v-else-if="!pending" class="gallery gap-4 md:gap-8">
+      <NotFound v-if="error" />
+      <ClientOnly>
         <div
-          v-for="(image, index) in data"
-          :id="image"
-          :class="[
-            'gallery-container overflow-hidden flex justify-center items-center transition-all opacity-0 hover:brightness-90',
-          ]"
-          :key="index"
+          v-if="pending"
+          class="items-center justify-center flex pt-12"
         >
-          <img
-            @load="imageLoaded"
-            width="500"
-            height="500"
-            :loading="index < 2 ? 'eager' : 'lazy'"
-            class="cursor-pointer w-full object-cover"
-            :src="`https://cdn.fredrik.studio/albums/${album}/thumbs/${image}`"
-            alt=""
-            @click="openImage($event, image)"
-          />
+          <UIcon name="i-heroicons-arrow-path" class="animate-spin text-4xl" />
         </div>
-      </div>
+        <div v-if="!pending" class="gallery gap-4 md:gap-8">
+          <div
+            v-for="(image, index) in data"
+            :id="image"
+            :class="[
+              'gallery-container overflow-hidden flex justify-center items-center transition-all opacity-0 hover:brightness-90',
+            ]"
+            :key="index"
+          >
+            <img
+              @load="imageLoaded"
+              width="500"
+              height="500"
+              :loading="index < 2 ? 'eager' : 'lazy'"
+              class="cursor-pointer w-full object-cover"
+              :src="`https://cdn.fredrik.studio/albums/${album}/thumbs/${image}`"
+              alt=""
+              @click="openImage($event, image)"
+            />
+          </div>
+        </div>
+      </ClientOnly>
+
     </div>
 
     <Lightbox

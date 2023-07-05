@@ -106,7 +106,7 @@ watch(
     </p>
     <NuxtLink
       to="/contact"
-      class="ml-auto rounded-full w-12 h-12 overflow-hidden"
+      class="ml-auto rounded-full w-8 h-8 md:w-12 md:h-12 overflow-hidden"
     >
       <img src="https://cdn.fredrik.studio/albums/home/2.jpg" />
     </NuxtLink>
