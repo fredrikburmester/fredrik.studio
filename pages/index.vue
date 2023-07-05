@@ -21,6 +21,12 @@ const links = [
     image: "https://cdn.fredrik.studio/albums/norrköping/thumbs/3.jpg",
   },
 ];
+
+useSeoMeta({
+  title: 'FB - Home',
+  ogTitle: 'Fredrik Burmester',
+  ogImage: `https://cdn.fredrik.studio/albums/home/thumbs/2.jpg`,
+})
 </script>
 
 <template>

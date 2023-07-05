@@ -77,7 +77,6 @@ const prevImage = () => {
   }
 };
 
-// Add head SEO stuff
 useSeoMeta({
   title: 'FB - ' + capitalizedAlbum.value,
   ogTitle: 'Fredrik Burmester',

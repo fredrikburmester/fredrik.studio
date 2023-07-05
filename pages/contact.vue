@@ -1,4 +1,10 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+useSeoMeta({
+  title: 'FB - Contact',
+  ogTitle: 'Fredrik Burmester',
+  ogImage: `https://cdn.fredrik.studio/albums/home/thumbs/2.jpg`,
+})
+</script>
 <template>
   <div class="px-4 md:px-8 pt-24 md:ml-[5vw]">
     <div class="md:fixed md:top-[calc(50vh-100px)] h-100">
