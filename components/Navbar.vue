@@ -99,8 +99,8 @@ watch(
     >
       {{ $route.params.album }}
     </p>
-    <NuxtLink class="ml-auto" to="/contact">
-      <UAvatar size="md" src="https://cdn.fredrik.studio/albums/home/2.jpg" />
+    <NuxtLink to="/contact" class="ml-auto rounded-full w-12 h-12 overflow-hidden">
+      <img src="https://cdn.fredrik.studio/albums/home/2.jpg" />
     </NuxtLink>
 
     <USlideover v-model="isOpen" side="left">

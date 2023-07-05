@@ -75,18 +75,23 @@ const prevImage = () => {
 </script>
 
 <template>
-  <UContainer class="pb-4 grid pt-16">
-    <div class="mb-8 md:mb-20 md:pt-12">
+  <UContainer class="pb-4 grid pt-24">
+    <div class="pb-8">
+      <UButton label="Back" color="amber" class="mb-4" to="/">
+        <template #leading>
+          <UIcon name="i-heroicons-arrow-left-20-solid" />
+        </template>
+      </UButton>
       <h1
         ref="title"
         :class="[
-          'text-6xl md:text-8xl font-bold capitalize pt-8 mb-2 origin-bottom-left',
+          'text-6xl md:text-8xl font-bold capitalize mb-2 origin-bottom-left',
         ]"
       >
         {{ $route.params.album }}
       </h1>
       <div>
-        <UBadge color="yellow">{{ data?.length }} images</UBadge>
+        <UBadge color="amber">{{ data?.length }} images</UBadge>
       </div>
     </div>
     <div
