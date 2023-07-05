@@ -27,6 +27,10 @@ const album = computed(() => {
   return route.params.album.toString().toLowerCase() as string;
 });
 
+const capitalizedAlbum = computed(() => {
+  return album.value[0].toUpperCase() + album.value.slice(1);
+});
+
 const imageLoaded = (e: Event) => {
   let image = e.target as HTMLImageElement;
   let format = image.width / image.height;
@@ -75,15 +79,11 @@ const prevImage = () => {
 
 // Add head SEO stuff
 useSeoMeta({
-  title: 'FB',
+  title: 'FB - ' + capitalizedAlbum.value,
   ogTitle: 'Fredrik Burmester',
   description: album.value.toUpperCase(),
   ogDescription: album.value.toUpperCase(),
   ogImage: `https://cdn.fredrik.studio/albums/${album}/thumbs/${image}`,
-})
-
-useHead({
-  meta: [{ property: 'og:title', content: `FB - ${album.value.toUpperCase()}` }]
 })
 </script>
 
