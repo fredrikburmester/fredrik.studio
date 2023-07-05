@@ -82,7 +82,7 @@ useSeoMeta({
   ogTitle: 'Fredrik Burmester',
   description: album.value.toUpperCase(),
   ogDescription: album.value.toUpperCase(),
-  ogImage: `https://cdn.fredrik.studio/albums/${album}/thumbs/${image}`,
+  ogImage: `https://cdn.fredrik.studio/albums/${album.value}/thumbs/${image.value}`,
 })
 </script>
 
