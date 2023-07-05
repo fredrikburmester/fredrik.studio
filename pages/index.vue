@@ -25,15 +25,19 @@ const links = [
 
 <template>
   <div
-    class="bg w-[100svw] h-[100svh] overflow-hidden flex flex-col items-start relative z-0 pt-20"
+    class="w-[100svw] h-[100svh] overflow-hidden grid grid-rows-[auto_1fr] justify-items-start relative z-0 pt-20"
   >
-    <div class="px-4 md:px-8 flex flex-col gap-4 md:gap-8 items-center py-4 md:py-8 text-left">
+    <div
+      class="px-4 md:px-8 flex flex-col gap-4 md:gap-8 text-left py-4 md:my-20"
+    >
       <div>
-        <h1 class="text-6xl md:text-7xl capitalize mb-2 font-bold">Fredrik Burmester</h1>
+        <h1 class="text-6xl md:text-7xl capitalize mb-2 font-bold">
+          Fredrik Burmester
+        </h1>
         <p class="uppercase text-xl md:text-2xl text-gray-500">photographer</p>
       </div>
     </div>
-    <div class="gap-8 w-screen py-4 md:py-8 h-full">
+    <div class="gap-8 w-screen py-4 md:py-8 h-full grow">
       <div
         class="flex flex-row gap-4 md:gap-8 overflow-x-scroll w-full shrink-0 px-4 md:px-8 snap-mandatory snap-x h-full"
       >

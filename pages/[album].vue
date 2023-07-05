@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 const route = useRoute();
 import { useWindowScroll } from "@vueuse/core";
+import { useWindowSize } from "@vueuse/core";
 
 const { y } = useWindowScroll();
+const { width } = useWindowSize();
 
 const { data, pending } = await useFetch<string[]>(
   () => "/api/albums?album=" + route.params.album,
@@ -14,7 +16,7 @@ const { data, pending } = await useFetch<string[]>(
 const index = ref();
 const isOpen = ref(false);
 
-const openImage = (image: string) => {
+const openImage = (e: Event, image: string) => {
   index.value = data.value?.indexOf(image);
   isOpen.value = true;
 };
@@ -46,8 +48,9 @@ const title = ref();
 watch(
   () => y.value,
   () => {
+    if(width.value > 767) return
     let scale = 1;
-    scale = 1 - y.value / 500;
+    scale = 1 - y.value / 400;
     if (scale < 0.5) scale = 0.5;
     if (title.value) {
       title.value.style.transform = `scale(${scale})`;
@@ -75,9 +78,9 @@ const prevImage = () => {
 </script>
 
 <template>
-  <UContainer class="pb-4 grid pt-24">
-    <div class="pb-8">
-      <UButton label="Back" color="amber" class="mb-4" to="/">
+  <UContainer :ui="{ constrained: 'md:ml-[10vw]' }" class="pb-4 grid md:grid-cols-2 pt-24">
+    <div class="pb-8 md:sticky md:top-[calc(50vh-100px)] md:h-[100vh]">
+      <UButton label="Home" color="amber" class="mb-4" to="/">
         <template #leading>
           <UIcon name="i-heroicons-arrow-left-20-solid" />
         </template>
@@ -94,33 +97,36 @@ const prevImage = () => {
         <UBadge color="amber">{{ data?.length }} images</UBadge>
       </div>
     </div>
-    <div
-      v-if="pending"
-      class="place-self-center h-[50vh] grid place-items-center"
-    >
-      <UIcon name="i-heroicons-arrow-path" class="animate-spin text-4xl" />
-    </div>
-    <div v-if="!pending" class="gallery gap-4 md:gap-8">
+    <div>
       <div
-        v-for="(image, index) in data"
-        :id="image"
-        :class="[
-          'gallery-container overflow-hidden flex justify-center items-center transition-all opacity-0 hover:brightness-90',
-        ]"
-        :key="index"
+        v-if="pending"
+        class="place-self-center h-[50vh] grid place-items-center"
       >
-        <img
-          @load="imageLoaded"
-          width="500"
-          height="500"
-          :loading="index < 2 ? 'eager' : 'lazy'"
-          class="cursor-pointer w-full object-cover"
-          :src="`https://cdn.fredrik.studio/albums/${album}/thumbs/${image}`"
-          alt=""
-          @click="openImage(image)"
-        />
+        <UIcon name="i-heroicons-arrow-path" class="animate-spin text-4xl" />
+      </div>
+      <div v-if="!pending" class="gallery gap-4 md:gap-8">
+        <div
+          v-for="(image, index) in data"
+          :id="image"
+          :class="[
+            'gallery-container overflow-hidden flex justify-center items-center transition-all opacity-0 hover:brightness-90',
+          ]"
+          :key="index"
+        >
+          <img
+            @load="imageLoaded"
+            width="500"
+            height="500"
+            :loading="index < 2 ? 'eager' : 'lazy'"
+            class="cursor-pointer w-full object-cover"
+            :src="`https://cdn.fredrik.studio/albums/${album}/thumbs/${image}`"
+            alt=""
+            @click="openImage($event, image)"
+          />
+        </div>
       </div>
     </div>
+
     <Lightbox
       @next="nextImage"
       @previous="prevImage"
