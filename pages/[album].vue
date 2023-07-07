@@ -13,7 +13,7 @@ const { data, pending, error } = useFetch<string[]>(
 const index = ref();
 const isOpen = ref(false);
 
-const openImage = (e: Event, image: string) => {
+const openImage = (image: string) => {
   index.value = data.value?.indexOf(image);
   isOpen.value = true;
 };
@@ -30,20 +30,6 @@ const album = computed(() => {
 const capitalizedAlbum = computed(() => {
   return album.value[0].toUpperCase() + album.value.slice(1);
 });
-
-const imageLoaded = (e: Event) => {
-  let image = e.target as HTMLImageElement;
-  let format = image.width / image.height;
-  let parent = image.parentElement as HTMLDivElement;
-
-  if (format > 1) {
-    parent.classList.add("wide");
-  } else {
-    parent.classList.add("tall");
-  }
-
-  parent.classList.remove("opacity-0");
-};
 
 const title = ref();
 watch(
@@ -116,37 +102,9 @@ useSeoMeta({
         <UBadge color="amber">{{ data.length }} images</UBadge>
       </div>
     </div>
-    <div class="md:col-start-2">
+    <div class="md:col-start-2 z-10">
       <NotFound v-if="error" />
-      <ClientOnly>
-        <div
-          v-if="pending"
-          class="items-center justify-center flex pt-12"
-        >
-          <UIcon name="i-heroicons-arrow-path" class="animate-spin text-4xl" />
-        </div>
-        <div v-if="!pending" class="gallery gap-4 md:gap-8">
-          <div
-            v-for="(image, index) in data"
-            :id="image"
-            :class="[
-              'gallery-container overflow-hidden flex justify-center items-center transition-all opacity-0 hover:brightness-90',
-            ]"
-            :key="index"
-          >
-            <img
-              @load="imageLoaded"
-              width="500"
-              height="500"
-              :loading="index < 2 ? 'eager' : 'lazy'"
-              class="cursor-pointer w-full object-cover"
-              :src="`https://cdn.fredrik.studio/albums/${album}/thumbs/${image}`"
-              alt=""
-              @click="openImage($event, image)"
-            />
-          </div>
-        </div>
-      </ClientOnly>
+      <GalleryGrid v-if="data" :images="data" @open="openImage" />
     </div>
 
     <Lightbox
@@ -159,43 +117,3 @@ useSeoMeta({
     />
   </UContainer>
 </template>
-
-<style>
-.gallery {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  grid-auto-flow: dense;
-}
-
-.gallery-container img {
-  flex-shrink: 0;
-  min-width: 100%;
-  min-height: 100%;
-}
-
-.wide {
-  grid-column: span 2;
-  aspect-ratio: 4/3;
-}
-
-.tall {
-  grid-row: span 1;
-  aspect-ratio: 3/4;
-}
-
-@media only screen and (max-width: 1000px) {
-  .gallery {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-  }
-
-  .gallery .tall {
-    grid-column: span 1;
-  }
-
-  .gallery .wide {
-    grid-column: span 1;
-  }
-}
-</style>
