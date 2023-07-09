@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useWindowScroll } from "@vueuse/core";
+import { useWindowSize } from "@vueuse/core";
+const { width } = useWindowSize();
 const { y } = useWindowScroll();
 const route = useRoute();
 const isOpen = ref(false);
@@ -71,6 +73,7 @@ watch(
 watch(
   () => y.value,
   () => {
+    if (width.value > 767) return;
     let opacity = 0;
     if (y.value > 50) {
       opacity = (y.value - 50) / 100;
@@ -95,12 +98,17 @@ watch(
     />
     <p
       ref="title"
-      :class="['capitalize text-xl font-bold ml-4 md:ml-6 opacity-0 text-black']"
+      :class="[
+        'capitalize text-xl font-bold ml-4 md:ml-6 opacity-0 text-black',
+      ]"
     >
       {{ $route.params.album }}
     </p>
-    <NuxtLink class="ml-auto" to="/contact">
-      <UAvatar size="md" src="https://cdn.fredrik.studio/albums/home/2.jpg" />
+    <NuxtLink
+      to="/contact"
+      class="ml-auto rounded-full w-8 h-8 md:w-12 md:h-12 overflow-hidden"
+    >
+      <img src="https://cdn.fredrik.studio/albums/home/2.jpg" />
     </NuxtLink>
 
     <USlideover v-model="isOpen" side="left">
@@ -124,8 +132,10 @@ watch(
             padding: 'py-1.5 px-0',
           }"
         />
-        <hr class="my-8">
-        <nuxt-link @click="isOpen = false" class="" to="/contact">Contact me</nuxt-link>
+        <hr class="my-8" />
+        <nuxt-link @click="isOpen = false" class="" to="/contact"
+          >Contact me</nuxt-link
+        >
       </div>
     </USlideover>
   </div>

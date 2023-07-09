@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import { _width } from '#tailwind-config/theme';
-import { useWindowSize } from '@vueuse/core'
-import { useImage as useVueUseImage } from '@vueuse/core'
 
 const props = defineProps<{
   image: string
@@ -62,9 +60,6 @@ const imageLoaded = (e: Event) => {
         @load="imageRef.classList.remove('opacity-0')"
       />
       </ClientOnly>
-    <!-- <ClientOnly>
-      <nuxt-img class="object-cover" :_srcset="_srcset" />
-    </ClientOnly> -->
   </div>
 </template>
 
