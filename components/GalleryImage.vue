@@ -17,16 +17,16 @@ const src = computed(() => {
 });
 
 const imageLoaded = (e: Event) => {
-  const el = e.target as HTMLImageElement;
-  const parent = el.parentElement as HTMLDivElement;
+  // const el = e.target as HTMLImageElement;
+  // const parent = el.parentElement as HTMLDivElement;
 
-  if(el.width > el.height) {
-    parent.classList.add('wide')
-    parent.classList.remove('aspect-[3/4]')
-  } else {
-    parent.classList.remove('aspect-[3/4]')
-    parent.classList.add('tall')
-  }
+  // if(el.width > el.height) {
+  //   parent.classList.add('wide')
+  //   parent.classList.remove('aspect-[3/4]')
+  // } else {
+  //   parent.classList.remove('aspect-[3/4]')
+  //   parent.classList.add('tall')
+  // }
 }
 
 </script>
@@ -39,27 +39,26 @@ const imageLoaded = (e: Event) => {
     'w-full'
   ]"
   >
+    <img 
+    loading="lazy"
+    width="1000"
+    height="1000"
+    class="blur-2xl z-0"
+    :src="img(src, { width: 50, quality: 70 })" 
+    alt=""
+    />
     <ClientOnly>
-      <img 
-        loading="lazy"
-        width="1000"
-        height="1000"
-        class="object-cover w-full blur-2xl z-0"
-        :src="img(src, { width: 50, quality: 70 })" 
-        alt=""
-        @load="imageLoaded"
-      />
       <img 
         loading="lazy"
         ref="imageRef" 
         width="1000"
         height="1000"
-        class="absolute top-0 left-0 object-cover opacity-0 z-10 transition-all duration-700" 
+        class="absolute top-0 left-0 object-cover opacity-0 z-10 transition-all duration-1000" 
         :src="src" 
         alt=""
         @load="imageRef.classList.remove('opacity-0')"
       />
-      </ClientOnly>
+    </ClientOnly>
   </div>
 </template>
 
