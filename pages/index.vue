@@ -90,6 +90,7 @@ useSeoMeta({
               <img
                 :src="l.image"
                 class="absolute top-0 left-0 shrink-0 min-w-full z-0 brightness-50 min-h-full object-cover"
+                alt="gallery cover"
               />
             </nuxt-link>
           </div>
