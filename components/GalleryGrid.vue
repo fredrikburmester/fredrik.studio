@@ -19,14 +19,14 @@ defineEmits(['open'])
 <template>
   <div>
     <div class="hidden md:grid grid-cols-2 gap-4 md:gap-8">
-      <div class="gallery gap-4 md:gap-8 grid-cols-1">
+      <div class="flex flex-col gap-4 md:gap-8">
         <GalleryImage v-for="image, index in odd" :key="index" :index="index" :image="image" @click="$emit('open', image)" />
       </div>
-      <div class="gallery gap-4 md:gap-8 grid-cols-1">
+      <div class="flex flex-col gap-4 md:gap-8">
         <GalleryImage v-for="image, index in even" :key="index" :index="index" :image="image" @click="$emit('open', image)" />
       </div>
     </div>
-    <div class="grid md:hidden grid-cols-1 gap-4 md:gap-8">
+    <div class="flex flex-col md:hidden gap-4 md:gap-8">
       <GalleryImage v-for="image, index in images" :key="index" :index="index" :image="image" @click="$emit('open', image)" />
     </div>
   </div>
@@ -35,7 +35,7 @@ defineEmits(['open'])
 <style>
 .gallery {
   display: grid;
-  /* align-items: center; */
+  align-items: center;
   /* grid-template-rows: masonry; */
   grid-auto-flow: dense; 
 }
