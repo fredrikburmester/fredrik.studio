@@ -5,6 +5,8 @@ const { width } = useWindowSize();
 const { y } = useWindowScroll();
 const route = useRoute();
 const isOpen = ref(false);
+const img = useImage();
+
 const links = [
   {
     label: "Home",
@@ -87,7 +89,7 @@ watch(
 <template>
   <div
     :class="[
-      'fixed w-screen top-0 flex flex-row py-4 px-4 md:px-8 transition-all z-10 bg-white items-center',
+      'fixed w-screen top-0 flex flex-row py-4 px-4 md:px-8 transition-all bg-white items-center z-20',
       y > 25 && ' shadow-sm bg-white',
     ]"
   >
@@ -108,7 +110,10 @@ watch(
       to="/contact"
       class="ml-auto rounded-full w-8 h-8 md:w-12 md:h-12 overflow-hidden"
     >
-      <img src="https://cdn.fredrik.studio/albums/home/2.jpg" alt="profile picture" />
+      <img 
+        :src="img('https://cdn.fredrik.studio/albums/home/2.jpg', { width: 200, quality: 50 })"
+        alt="profile picture" 
+      />
     </NuxtLink>
 
     <USlideover v-model="isOpen" side="left">

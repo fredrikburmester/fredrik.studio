@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const img = useImage()
+
 const links = [
   {
     label: "Husarö",
@@ -60,7 +62,7 @@ useSeoMeta({
               {{ l.label }}
             </p>
             <img
-              :src="l.image"
+              :src="img(l.image, { height: 600, quality: 70 })"
               class="absolute top-0 left-0 shrink-0 min-w-full z-0 brightness-50 min-h-full object-cover"
             />
           </nuxt-link>
@@ -88,7 +90,7 @@ useSeoMeta({
                 {{ l.label }}
               </p>
               <img
-                :src="l.image"
+                :src="img(l.image, { height: 600, quality: 70 })"
                 class="absolute top-0 left-0 shrink-0 min-w-full z-0 brightness-50 min-h-full object-cover"
                 alt="gallery cover"
               />

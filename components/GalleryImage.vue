@@ -43,8 +43,8 @@ const imageLoaded = (e: Event) => {
     loading="lazy"
     width="1000"
     height="1000"
-    class="blur-2xl z-0"
-    :src="img(src, { width: 50, quality: 70 })" 
+    class="blur-xl z-0 backdrop-brightness-75"
+    :src="img(src, { width: 40, quality: 50 })" 
     alt=""
     />
     <ClientOnly>
@@ -53,7 +53,7 @@ const imageLoaded = (e: Event) => {
         ref="imageRef" 
         width="1000"
         height="1000"
-        class="absolute top-0 left-0 object-cover opacity-0 z-10 transition-all duration-1000" 
+        class="absolute top-0 left-0 object-cover opacity-0 z-10 transition-all duration-[1s]" 
         :src="src" 
         alt=""
         @load="imageRef.classList.remove('opacity-0')"
