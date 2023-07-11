@@ -6,12 +6,17 @@ defineProps<{
   images: ReturnItem[];
 }>();
 
-defineEmits(["open"]);
+const emit = defineEmits(["open"]);
+
+const open = (image: ReturnItem) => {
+  console.log("open", image);
+  emit("open", image);
+}
 </script>
 <template>
   <div class="gallery gap-4 md:gap-8">
-    <template v-for="image, index in images" :key="index">
-      <GalleryImage v-if="image" :image="image" @click="$emit('open', image)" />
+    <template v-for="(image, index) in images" :key="index">
+      <GalleryImage v-if="image" :image="image" @click="open(image)" />
     </template>
   </div>
 </template>

@@ -30,7 +30,7 @@ const src = computed(() => {
   <div
     ref="containerRef"
     :class="[
-    'relative image-container overflow-hidden hover:brightness-90 duration-500',
+    'relative image-container overflow-hidden hover:brightness-90 duration-500 cursor-pointer',
     image.width > image.height ? 'wide' : 'tall'
   ]"
   >
@@ -38,7 +38,7 @@ const src = computed(() => {
       loading="lazy"
       :width="image.width"
       :height="image.height"
-      class="blur-xl z-0 backdrop-brightness-50"
+      class="blur-xl z-0"
       :src="img(src, { width: 90, quality: 10 })"
       alt=""
     />

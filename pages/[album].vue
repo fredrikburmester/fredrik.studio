@@ -11,16 +11,22 @@ const { data, pending, error } = useFetch<ReturnType>(
   () => "/api/images?album=" + route.params.album.toString().toLowerCase()
 );
 
+const title = ref();
 const index = ref();
 const isOpen = ref(false);
 
 const openImage = (image: ReturnItem) => {
-  index.value = data.value?.findIndex((item) => item.name === image.name);
-  isOpen.value = true;
+  if(!data.value) return;
+  const i = data.value.findIndex((item) => item.name === image.name);
+
+  if(i > -1) {
+    index.value = i;
+    isOpen.value = true;
+  } 
 };
 
-const image = computed(() => {
-  if (!index.value || !data.value) return null;
+const selectedImage = computed(() => {
+  if (index.value === null || index.value === undefined || !data.value) return null;
   return data.value[index.value].name;
 });
 
@@ -31,20 +37,6 @@ const album = computed(() => {
 const capitalizedAlbum = computed(() => {
   return album.value[0].toUpperCase() + album.value.slice(1);
 });
-
-const title = ref();
-watch(
-  () => y.value,
-  () => {
-    if (width.value > 767) return;
-    let scale = 1;
-    scale = 1 - y.value / 400;
-    if (scale < 0.5) scale = 0.5;
-    if (title.value) {
-      title.value.style.transform = `scale(${scale})`;
-    }
-  }
-);
 
 const nextImage = () => {
   if (index.value === null || !data.value) return;
@@ -72,6 +64,19 @@ const seoImage = computed(() => {
   }
   return "";
 });
+
+watch(
+  () => y.value,
+  () => {
+    if (width.value > 767) return;
+    let scale = 1;
+    scale = 1 - y.value / 400;
+    if (scale < 0.5) scale = 0.5;
+    if (title.value) {
+      title.value.style.transform = `scale(${scale})`;
+    }
+  }
+);
 
 useSeoMeta({
   title: "FB - " + capitalizedAlbum.value,
@@ -109,12 +114,12 @@ useSeoMeta({
     </div>
 
     <Lightbox
-      v-if="image"
+      v-if="selectedImage"
       @next="nextImage"
       @previous="prevImage"
       :is-open="isOpen"
       @close="isOpen = false"
-      :image="image"
+      :image="selectedImage"
       :album="album"
     />
   </UContainer>
