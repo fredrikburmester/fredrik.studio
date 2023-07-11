@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 useSeoMeta({
-  title: 'FB - Contact',
-  ogTitle: 'Fredrik Burmester',
-  description: 'Contact me',
-  ogDescription: 'Contact me',
+  title: "FB - Contact",
+  ogTitle: "Fredrik Burmester",
+  description: "Contact me",
+  ogDescription: "Contact me",
   ogImage: `https://cdn.fredrik.studio/albums/home/thumbs/2.jpg`,
-})
+});
 </script>
 <template>
   <div class="px-4 md:px-8 pt-24 md:ml-[5vw]">
@@ -15,7 +15,7 @@ useSeoMeta({
           <UIcon name="i-heroicons-arrow-left-20-solid" />
         </template>
       </UButton>
-      <h1 class="text-6xl md:text-7xl font-bold capitalize mb-2 ">Contact me</h1>
+      <h1 class="text-6xl md:text-7xl font-bold capitalize mb-2">Contact me</h1>
       <p class="max-w-[60ch]">
         Hey, thanks for stopping by! 😄 I hope you liked some of the
         photographs. If you want to contact me just send me an

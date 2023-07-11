@@ -1,60 +1,55 @@
 <script lang="ts" setup>
-import { _width } from '#tailwind-config/theme';
+type ReturnItem = {
+  name: string;
+  width: number;
+  height: number;
+};
 
 const props = defineProps<{
-  image: string
-  index: number
-}>()
+  image: ReturnItem;
+}>();
 
-const img = useImage()
+const img = useImage();
 const imageRef = ref();
 const route = useRoute();
 const containerRef = ref();
 
-const src = computed(() => {
-  const album = route.params.album.toString().toLowerCase() as string;
-  return 'https://cdn.fredrik.studio/albums/' + album + '/thumbs/' + props.image;
+const width = computed(() => {
+  return props.image.width < props.image.height ? 500 : 1000;
 });
 
-const imageLoaded = (e: Event) => {
-  // const el = e.target as HTMLImageElement;
-  // const parent = el.parentElement as HTMLDivElement;
-
-  // if(el.width > el.height) {
-  //   parent.classList.add('wide')
-  //   parent.classList.remove('aspect-[3/4]')
-  // } else {
-  //   parent.classList.remove('aspect-[3/4]')
-  //   parent.classList.add('tall')
-  // }
-}
-
+const src = computed(() => {
+  const album = route.params.album.toString().toLowerCase() as string;
+  return (
+    "https://cdn.fredrik.studio/albums/" + album + "/thumbs/" + props.image.name
+  );
+});
 </script>
 
 <template>
   <div
-  ref="containerRef"
-  :class="[
+    ref="containerRef"
+    :class="[
     'relative image-container overflow-hidden hover:brightness-90 duration-500',
-    'w-full'
+    image.width > image.height ? 'wide' : 'tall'
   ]"
   >
-    <img 
-    loading="lazy"
-    width="1000"
-    height="1000"
-    class="blur-xl z-0 backdrop-brightness-75"
-    :src="img(src, { width: 40, quality: 50 })" 
-    alt=""
+    <img
+      loading="lazy"
+      :width="image.width"
+      :height="image.height"
+      class="blur-xl z-0 backdrop-brightness-50"
+      :src="img(src, { width: 90, quality: 10 })"
+      alt=""
     />
     <ClientOnly>
-      <img 
+      <img
         loading="lazy"
-        ref="imageRef" 
-        width="1000"
-        height="1000"
-        class="absolute top-0 left-0 object-cover opacity-0 z-10 transition-all duration-[1s]" 
-        :src="src" 
+        ref="imageRef"
+        :width="image.width"
+        :height="image.height"
+        class="absolute top-0 left-0 object-cover opacity-0 z-10 transition-all duration-[1s]"
+        :src="img(src, { width: width, quality: 70 })"
         alt=""
         @load="imageRef.classList.remove('opacity-0')"
       />

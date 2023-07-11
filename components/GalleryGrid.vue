@@ -1,34 +1,18 @@
 <script lang="ts" setup>
-import GalleryImage from './GalleryImage.vue';
+import GalleryImage from "./GalleryImage.vue";
+import { ReturnItem } from "../types";
 
-const props = defineProps<{
-  images: string[]
+defineProps<{
+  images: ReturnItem[];
 }>();
 
-const odd = computed(() => {
-  return props.images.filter((_, i) => i % 2 === 0);
-});
-
-const even = computed(() => {
-  return props.images.filter((_, i) => i % 2 !== 0);
-});
-
-defineEmits(['open'])
-
+defineEmits(["open"]);
 </script>
 <template>
-  <div>
-    <div class="hidden md:grid grid-cols-2 gap-4 md:gap-8">
-      <div class="flex flex-col gap-4 md:gap-8">
-        <GalleryImage v-for="image, index in odd" :key="index" :index="index" :image="image" @click="$emit('open', image)" />
-      </div>
-      <div class="flex flex-col gap-4 md:gap-8">
-        <GalleryImage v-for="image, index in even" :key="index" :index="index" :image="image" @click="$emit('open', image)" />
-      </div>
-    </div>
-    <div class="flex flex-col md:hidden gap-4 md:gap-8">
-      <GalleryImage v-for="image, index in images" :key="index" :index="index" :image="image" @click="$emit('open', image)" />
-    </div>
+  <div class="gallery gap-4 md:gap-8">
+    <template v-for="image, index in images" :key="index">
+      <GalleryImage v-if="image" :image="image" @click="$emit('open', image)" />
+    </template>
   </div>
 </template>
 
@@ -37,7 +21,7 @@ defineEmits(['open'])
   display: grid;
   align-items: center;
   /* grid-template-rows: masonry; */
-  grid-auto-flow: dense; 
+  grid-auto-flow: dense;
 }
 
 @media only screen and (max-width: 1000px) {

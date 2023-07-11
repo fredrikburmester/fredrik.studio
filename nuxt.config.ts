@@ -5,11 +5,11 @@ export default defineNuxtConfig({
   colorMode: {
     preference: "light",
   },
-  plugins: [{ src: '~/plugins/vercel.ts', mode: 'client' }],
+  plugins: [{ src: "~/plugins/vercel.ts", mode: "client" }],
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' }
+    pageTransition: { name: "page", mode: "out-in" },
   },
   image: {
-    domains: ['cdn.fredrik.studio']
-  }
+    domains: ["cdn.fredrik.studio"],
+  },
 });

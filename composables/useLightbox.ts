@@ -1,16 +1,16 @@
 export const useLightbox = () => {
-  const image = ref('')
+  const image = ref("");
 
   const close = () => {
-    image.value = ''
-  }
+    image.value = "";
+  };
 
   const open = (i: string) => {
-    image.value = i
-  }
+    image.value = i;
+  };
 
   return {
     open,
-    close
-  }
-}
+    close,
+  };
+};

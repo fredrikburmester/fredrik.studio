@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const img = useImage()
+const img = useImage();
 
 const links = [
   {
@@ -25,17 +25,16 @@ const links = [
 ];
 
 useSeoMeta({
-  title: 'FB - Home',
-  ogTitle: 'Fredrik Burmester',
-  description: 'Photographer',
-  ogDescription: 'Photographer',
+  title: "FB - Home",
+  ogTitle: "Fredrik Burmester",
+  description: "Photographer",
+  ogDescription: "Photographer",
   ogImage: `https://cdn.fredrik.studio/albums/home/thumbs/2.jpg`,
-})
+});
 </script>
 
 <template>
   <div>
-
     <div
       class="grid md:hidden overflow-hidden grid-rows-[auto_1fr] justify-items-start relative z-0 pt-20 h-[100svh]"
     >
@@ -46,7 +45,9 @@ useSeoMeta({
           <h1 class="text-6xl md:text-7xl capitalize mb-2 font-bold">
             Fredrik Burmester
           </h1>
-          <p class="uppercase text-xl md:text-2xl text-gray-500">photographer</p>
+          <p class="uppercase text-xl md:text-2xl text-gray-500">
+            photographer
+          </p>
         </div>
       </div>
       <div class="gap-8 w-screen py-4 md:py-8 h-full grow">
@@ -73,18 +74,18 @@ useSeoMeta({
       <div class="hidden md:grid grid-cols-2 pt-24">
         <div class="md:fixed md:top-[calc(50vh-100px)] h-100 pl-[5vw]">
           <h1 class="text-6xl md:text-7xl capitalize mb-2 font-bold">
-            Fredrik<br>Burmester
+            Fredrik<br />Burmester
           </h1>
-          <p class="uppercase text-xl md:text-2xl text-gray-500">photographer</p>
+          <p class="uppercase text-xl md:text-2xl text-gray-500">
+            photographer
+          </p>
         </div>
         <div class="gap-8 w-full grow col-start-2 pb-4">
-          <div
-            class="grid grid-cols-2 gap-4 md:gap-8"
-          >
+          <div class="grid grid-cols-2 gap-4 md:gap-8">
             <nuxt-link
               v-for="l in links"
               :to="l.to"
-              class="snap-center hover:opacity-90 group transition-all shadow-lg rounded-lg w-full self-end h-[50vh] overflow-hidden flex items-end relative "
+              class="snap-center hover:opacity-90 group transition-all shadow-lg rounded-lg w-full self-end h-[50vh] overflow-hidden flex items-end relative"
             >
               <p class="font-bold z-10 m-4 md:m-8 text-white text-4xl">
                 {{ l.label }}
@@ -100,5 +101,4 @@ useSeoMeta({
       </div>
     </UContainer>
   </div>
-
 </template>

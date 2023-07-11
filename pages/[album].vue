@@ -2,25 +2,26 @@
 const route = useRoute();
 import { useWindowScroll } from "@vueuse/core";
 import { useWindowSize } from "@vueuse/core";
+import { ReturnItem, ReturnType } from "../types";
 
 const { y } = useWindowScroll();
 const { width } = useWindowSize();
 
-const { data, pending, error } = useFetch<string[]>(
-  () => "/api/albums?album=" + route.params.album.toString().toLowerCase(),
+const { data, pending, error } = useFetch<ReturnType>(
+  () => "/api/images?album=" + route.params.album.toString().toLowerCase()
 );
 
 const index = ref();
 const isOpen = ref(false);
 
-const openImage = (image: string) => {
-  index.value = data.value?.indexOf(image);
+const openImage = (image: ReturnItem) => {
+  index.value = data.value?.findIndex((item) => item.name === image.name);
   isOpen.value = true;
 };
 
 const image = computed(() => {
-  if (index.value === null || !data.value) return "";
-  return data.value[index.value];
+  if (!index.value || !data.value) return null;
+  return data.value[index.value].name;
 });
 
 const album = computed(() => {
@@ -35,7 +36,7 @@ const title = ref();
 watch(
   () => y.value,
   () => {
-    if(width.value > 767) return
+    if (width.value > 767) return;
     let scale = 1;
     scale = 1 - y.value / 400;
     if (scale < 0.5) scale = 0.5;
@@ -64,22 +65,21 @@ const prevImage = () => {
 };
 
 const seoImage = computed(() => {
-  if (data.value) {
-    return "https://cdn.fredrik.studio/albums/" +
-      album.value +
-      "/" +
-      data.value[0];
+  if (data.value && data.value.length > 0) {
+    return (
+      "https://cdn.fredrik.studio/albums/" + album.value + "/thumbs/" + data.value[0].name
+    );
   }
-  return ''
-})
+  return "";
+});
 
 useSeoMeta({
-  title: 'FB - ' + capitalizedAlbum.value,
-  ogTitle: 'Fredrik Burmester',
+  title: "FB - " + capitalizedAlbum.value,
+  ogTitle: "Fredrik Burmester",
   description: capitalizedAlbum,
   ogDescription: capitalizedAlbum,
   ogImage: seoImage.value,
-})
+});
 </script>
 
 <template>
@@ -103,11 +103,13 @@ useSeoMeta({
       </div>
     </div>
     <div class="md:col-start-2 z-10">
-      <NotFound v-if="error" />
+      <Pending v-if="pending" />
+      <NotFound v-else-if="error" />
       <GalleryGrid v-if="data" :images="data" @open="openImage" />
     </div>
 
     <Lightbox
+      v-if="image"
       @next="nextImage"
       @previous="prevImage"
       :is-open="isOpen"

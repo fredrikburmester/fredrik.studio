@@ -24,7 +24,7 @@ watch(
   () => {
     loaded.value = false;
   }
-)
+);
 
 const disableBodyScroll = () => {
   document.body.style.overflow = "hidden";
