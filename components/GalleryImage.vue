@@ -30,9 +30,9 @@ const src = computed(() => {
   <div
     ref="containerRef"
     :class="[
-    'relative image-container overflow-hidden hover:brightness-90 duration-500 cursor-pointer',
-    image.width > image.height ? 'wide' : 'tall'
-  ]"
+      'relative image-container overflow-hidden hover:brightness-90 duration-500 cursor-pointer',
+      image.width > image.height ? 'wide' : 'tall',
+    ]"
   >
     <img
       loading="lazy"

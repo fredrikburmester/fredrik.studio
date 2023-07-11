@@ -54,7 +54,7 @@ export default defineCachedEventHandler(
         })
       );
 
-      return images.filter((image) => image !== null) as ReturnType
+      return images.filter((image) => image !== null) as ReturnType;
     } catch (error) {
       throw new Error("Error fetching images" + error);
     }

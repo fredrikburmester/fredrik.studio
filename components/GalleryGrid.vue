@@ -11,7 +11,7 @@ const emit = defineEmits(["open"]);
 const open = (image: ReturnItem) => {
   console.log("open", image);
   emit("open", image);
-}
+};
 </script>
 <template>
   <div class="gallery gap-4 md:gap-8">

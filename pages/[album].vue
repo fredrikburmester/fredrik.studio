@@ -16,17 +16,18 @@ const index = ref();
 const isOpen = ref(false);
 
 const openImage = (image: ReturnItem) => {
-  if(!data.value) return;
+  if (!data.value) return;
   const i = data.value.findIndex((item) => item.name === image.name);
 
-  if(i > -1) {
+  if (i > -1) {
     index.value = i;
     isOpen.value = true;
-  } 
+  }
 };
 
 const selectedImage = computed(() => {
-  if (index.value === null || index.value === undefined || !data.value) return null;
+  if (index.value === null || index.value === undefined || !data.value)
+    return null;
   return data.value[index.value].name;
 });
 
@@ -59,7 +60,10 @@ const prevImage = () => {
 const seoImage = computed(() => {
   if (data.value && data.value.length > 0) {
     return (
-      "https://cdn.fredrik.studio/albums/" + album.value + "/thumbs/" + data.value[0].name
+      "https://cdn.fredrik.studio/albums/" +
+      album.value +
+      "/thumbs/" +
+      data.value[0].name
     );
   }
   return "";
