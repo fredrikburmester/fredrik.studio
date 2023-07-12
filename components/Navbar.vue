@@ -111,12 +111,7 @@ watch(
       class="ml-auto rounded-full w-8 h-8 md:w-12 md:h-12 overflow-hidden"
     >
       <img
-        :src="
-          img('https://cdn.fredrik.studio/albums/home/2.jpg', {
-            width: 200,
-            quality: 50,
-          })
-        "
+        src="/pp-lq.jpg"
         alt="profile picture"
       />
     </NuxtLink>

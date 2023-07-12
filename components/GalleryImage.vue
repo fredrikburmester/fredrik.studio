@@ -24,6 +24,13 @@ const src = computed(() => {
     "https://cdn.fredrik.studio/albums/" + album + "/thumbs/" + props.image.name
   );
 });
+
+const lqip = computed(() => {
+  const album = route.params.album.toString().toLowerCase() as string;
+  return (
+    "https://cdn.fredrik.studio/albums/" + album + "/lqip/" + props.image.name
+  );
+});
 </script>
 
 <template>
@@ -39,7 +46,7 @@ const src = computed(() => {
       :width="image.width"
       :height="image.height"
       class="blur-xl z-0"
-      :src="img(src, { width: 90, quality: 10 })"
+      :src="lqip"
       alt=""
     />
     <ClientOnly>
@@ -49,7 +56,7 @@ const src = computed(() => {
         :width="image.width"
         :height="image.height"
         class="absolute top-0 left-0 object-cover opacity-0 z-10 transition-all duration-[1s]"
-        :src="img(src, { width: width, quality: 70 })"
+        :src="src"
         alt=""
         @load="imageRef.classList.remove('opacity-0')"
       />

@@ -4,7 +4,7 @@ useSeoMeta({
   ogTitle: "Fredrik Burmester",
   description: "Contact me",
   ogDescription: "Contact me",
-  ogImage: `https://cdn.fredrik.studio/albums/home/thumbs/2.jpg`,
+  ogImage: `/pp-lq.jpg`,
 });
 </script>
 <template>

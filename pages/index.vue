@@ -5,22 +5,22 @@ const links = [
   {
     label: "Husarö",
     to: "/husarö",
-    image: "https://cdn.fredrik.studio/albums/husarö/thumbs/194.jpg",
+    image: "/husarö.jpg",
   },
   {
     label: "Portraits",
     to: "/portraits",
-    image: "https://cdn.fredrik.studio/albums/portraits/thumbs/21.jpg",
+    image: "/portraits.jpg",
   },
   {
     label: "Landscapes",
     to: "/landscapes",
-    image: "https://cdn.fredrik.studio/albums/landscapes/thumbs/21.jpg",
+    image: "/landscapes.jpg",
   },
   {
     label: "Norrköping",
     to: "/norrköping",
-    image: "https://cdn.fredrik.studio/albums/norrköping/thumbs/3.jpg",
+    image: "/norrköping.jpg",
   },
 ];
 
