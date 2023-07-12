@@ -1,9 +1,5 @@
 <script lang="ts" setup>
-type ReturnItem = {
-  name: string;
-  width: number;
-  height: number;
-};
+import { ReturnItem } from 'types';
 
 const props = defineProps<{
   image: ReturnItem;

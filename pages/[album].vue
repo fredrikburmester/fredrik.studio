@@ -7,9 +7,31 @@ import { ReturnItem, ReturnType } from "../types";
 const { y } = useWindowScroll();
 const { width } = useWindowSize();
 
-const { data, pending, error } = useFetch<ReturnType>(
-  () => "/api/images?album=" + route.params.album.toString().toLowerCase()
-);
+// fetch json file from "https://cdn.fredrik-studio/albums/" + route.params.album.toString().toLowerCase() + "/meta.json"
+// and store it in data
+
+const data = ref<ReturnType>();
+const error = ref();
+
+onBeforeMount(async () => {
+  try {
+    const album = route.params.album.toString().toLowerCase() as string;
+    const res = await fetch(
+      "https://cdn.fredrik.studio/albums/" + album + "/meta.json"
+    );
+    const json = await res.json();
+
+    const sorted = json.sort((a: ReturnItem, b: ReturnItem) => {
+      const n1 = a.name.split(".")[0];
+      const n2 = b.name.split(".")[0];
+      return parseInt(n1) - parseInt(n2);
+    });
+
+    data.value = sorted.reverse();
+  } catch (err) {
+    error.value = err;
+  }
+});
 
 const title = ref();
 const index = ref();
@@ -112,9 +134,8 @@ useSeoMeta({
       </div>
     </div>
     <div class="md:col-start-2 z-10">
-      <Pending v-if="pending" />
-      <NotFound v-else-if="error" />
-      <GalleryGrid v-if="data" :images="data" @open="openImage" />
+      <NotFound v-if="error" />
+      <GalleryGrid v-else-if="data" :images="data" @open="openImage" />
     </div>
 
     <Lightbox
