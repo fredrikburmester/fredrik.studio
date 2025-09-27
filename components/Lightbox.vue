@@ -7,7 +7,9 @@ const props = defineProps<{
 }>();
 
 const url = computed(() => {
-  return `https://cdn.fredrik.studio/albums/${props.album}/${props.image}`;
+  const config = useRuntimeConfig();
+  const base = config.public.blobBaseUrl;
+  return `${base}/albums/${props.album}/${props.image}`;
 });
 
 async function downloadImage() {

@@ -1,7 +1,10 @@
+const blobBaseUrl = process.env.NUXT_PUBLIC_BLOB_BASE_URL;
+const blobDomain = blobBaseUrl ? new URL(blobBaseUrl).host : undefined;
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ["@nuxt/image", "@nuxthq/ui"],
+  modules: ["@nuxt/image", "@nuxt/ui"],
   colorMode: {
     preference: "light",
   },
@@ -9,7 +12,13 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: "page", mode: "out-in" },
   },
+  runtimeConfig: {
+    uploadPassword: process.env.UPLOAD_PASSWORD,
+    public: {
+      blobBaseUrl: blobBaseUrl || "",
+    },
+  },
   image: {
-    domains: ["cdn.fredrik.studio"],
+    domains: ["cdn.fredrik.studio", ...(blobDomain ? [blobDomain] : [])],
   },
 });

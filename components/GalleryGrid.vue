@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import GalleryImage from "./GalleryImage.vue";
-import { ReturnItem } from "../types";
+import type { ReturnItem } from "@/types";
 
 defineProps<{
   images: ReturnItem[];

@@ -1,7 +1,15 @@
 <script lang="ts" setup>
 import Fuse from "fuse.js";
+import type { AlbumCollection } from "@/types";
+import { useRoute, useFetch } from "#imports";
 
-const { data: albums } = await useFetch<string[]>(() => "/api/allAlbums");
+const { data: albumCollection } = await useFetch<AlbumCollection>(
+  "/api/albums"
+);
+
+const albumSlugs = computed(
+  () => albumCollection.value?.map((album) => album.slug) || []
+);
 
 const route = useRoute();
 
@@ -22,9 +30,9 @@ function fuzzySearch(input: string, albumList: string[]) {
 }
 
 const similarAlbum = computed(() => {
-  if (!albums.value) return null;
+  if (!albumSlugs.value.length) return null;
   let album = route.params.album.toString().toLowerCase();
-  let similar = fuzzySearch(album, albums.value);
+  let similar = fuzzySearch(album, albumSlugs.value);
   if (similar != "No similar album found") {
     return similar;
   }

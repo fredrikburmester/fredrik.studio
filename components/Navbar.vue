@@ -1,67 +1,33 @@
 <script setup lang="ts">
 import { useWindowScroll } from "@vueuse/core";
 import { useWindowSize } from "@vueuse/core";
+import type { AlbumCollection } from "@/types";
 const { width } = useWindowSize();
 const { y } = useWindowScroll();
 const route = useRoute();
 const isOpen = ref(false);
 const img = useImage();
 
-const links = [
-  {
-    label: "Home",
-    to: "/",
-    click: () => {
-      isOpen.value = false;
+const { data: albums } = await useFetch<AlbumCollection>("/api/albums");
+
+const links = computed(() => {
+  const albumLinks = (albums.value || []).map((album) => ({
+    label: album.title,
+    to: `/${album.slug}`,
+    badge: album.description ? album.description : undefined,
+  }));
+
+  return [
+    {
+      label: "Home",
+      to: "/",
+      click: () => {
+        isOpen.value = false;
+      },
     },
-  },
-  {
-    label: "Portraits",
-    to: "/portraits",
-  },
-  {
-    label: "Landscapes",
-    to: "/landscapes",
-  },
-  {
-    label: "Husarö",
-    to: "/husarö",
-    icon: "i-heroicons-heart",
-    badge: "Location",
-  },
-  {
-    label: "Norrköping",
-    to: "/norrköping",
-    icon: "i-heroicons-sparkles",
-    badge: "Location",
-  },
-  {
-    label: "Tanzania",
-    to: "/tanzania",
-    icon: "i-heroicons-globe-europe-africa",
-    badge: "Location",
-  },
-  {
-    label: "Berlin",
-    to: "/berlin",
-    icon: "i-heroicons-globe-europe-africa",
-    badge: "Location",
-  },
-  {
-    label: "Krug",
-    to: "/krug",
-    badge: "Wedding",
-  },
-  {
-    label: "Fugelstad",
-    to: "/fugelstad",
-    badge: "Wedding",
-  },
-  {
-    label: "Pets",
-    to: "/pets",
-  },
-];
+    ...albumLinks,
+  ];
+});
 
 const title = ref();
 
@@ -110,10 +76,7 @@ watch(
       to="/contact"
       class="ml-auto rounded-full w-8 h-8 md:w-12 md:h-12 overflow-hidden"
     >
-      <img
-        src="/pp-lq.jpg"
-        alt="profile picture"
-      />
+      <img src="/pp-lq.jpg" alt="profile picture" />
     </NuxtLink>
 
     <USlideover v-model="isOpen" side="left">
@@ -138,8 +101,8 @@ watch(
           }"
         />
         <hr class="my-8" />
-        <nuxt-link @click="isOpen = false" class="" to="/contact"
-          >Contact me</nuxt-link
+        <NuxtLink @click="isOpen = false" class="" to="/contact"
+          >Contact me</NuxtLink
         >
       </div>
     </USlideover>

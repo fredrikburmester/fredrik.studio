@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-const route = useRoute();
 import { useWindowScroll } from "@vueuse/core";
 import { useWindowSize } from "@vueuse/core";
-import { ReturnItem, ReturnType } from "../types";
+import { useRoute, useRuntimeConfig } from "#imports";
+import type { ReturnItem, ReturnType } from "@/types";
 
 const { y } = useWindowScroll();
 const { width } = useWindowSize();
+const route = useRoute();
 
 // fetch json file from "https://cdn.fredrik-studio/albums/" + route.params.album.toString().toLowerCase() + "/meta.json"
 // and store it in data
@@ -13,15 +14,17 @@ const { width } = useWindowSize();
 const data = ref<ReturnType>();
 const error = ref();
 
+const fetchAlbumMeta = async (album: string) => {
+  const response = await $fetch<ReturnType>(`/api/albums/${album}/meta`);
+  return response || [];
+};
+
 onBeforeMount(async () => {
   try {
     const album = route.params.album.toString().toLowerCase() as string;
-    const res = await fetch(
-      "https://cdn.fredrik.studio/albums/" + album + "/meta.json"
-    );
-    const json = await res.json();
+    const meta = await fetchAlbumMeta(album);
 
-    const sorted = json.sort((a: ReturnItem, b: ReturnItem) => {
+    const sorted = meta.sort((a: ReturnItem, b: ReturnItem) => {
       const n1 = a.name.split(".")[0];
       const n2 = b.name.split(".")[0];
       return parseInt(n1) - parseInt(n2);
@@ -79,14 +82,12 @@ const prevImage = () => {
   }
 };
 
+const runtimeConfig = useRuntimeConfig();
+const blobBaseUrl = runtimeConfig.public.blobBaseUrl;
+
 const seoImage = computed(() => {
   if (data.value && data.value.length > 0) {
-    return (
-      "https://cdn.fredrik.studio/albums/" +
-      album.value +
-      "/thumbs/" +
-      data.value[0].name
-    );
+    return `${blobBaseUrl}/albums/${album.value}/thumbs/${data.value[0].name}`;
   }
   return "";
 });

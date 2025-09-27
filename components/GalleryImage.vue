@@ -1,37 +1,34 @@
 <script lang="ts" setup>
-import { ReturnItem } from 'types';
+import { useRoute, useRuntimeConfig } from "#imports";
+import type { ReturnItem } from "@/types";
 
 const props = defineProps<{
   image: ReturnItem;
 }>();
 
-const img = useImage();
 const imageRef = ref();
+const runtimeConfig = useRuntimeConfig();
+const blobBaseUrl = (runtimeConfig.public.blobBaseUrl || "").replace(/\/$/, "");
 const route = useRoute();
-const containerRef = ref();
+const albumSlug = computed(
+  () => route.params.album?.toString().toLowerCase() as string
+);
 
 const width = computed(() => {
   return props.image.width < props.image.height ? 500 : 1000;
 });
 
 const src = computed(() => {
-  const album = route.params.album.toString().toLowerCase() as string;
-  return (
-    "https://cdn.fredrik.studio/albums/" + album + "/thumbs/" + props.image.name
-  );
+  return `${blobBaseUrl}/albums/${albumSlug.value}/thumbs/${props.image.name}`;
 });
 
 const lqip = computed(() => {
-  const album = route.params.album.toString().toLowerCase() as string;
-  return (
-    "https://cdn.fredrik.studio/albums/" + album + "/lqip/" + props.image.name
-  );
+  return `${blobBaseUrl}/albums/${albumSlug.value}/lqip/${props.image.name}`;
 });
 </script>
 
 <template>
   <div
-    ref="containerRef"
     :class="[
       'relative image-container overflow-hidden hover:brightness-90 duration-500 cursor-pointer',
       image.width > image.height ? 'wide' : 'tall',
