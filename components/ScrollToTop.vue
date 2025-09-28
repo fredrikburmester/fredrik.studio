@@ -11,7 +11,7 @@ const { y } = useWindowScroll();
 </script>
 
 <template>
-  <Transition name="fade" mode="out-in">
+  <transition name="fade" mode="out-in">
     <div
       v-if="y > 200"
       class="fixed bottom-0 right-0 m-6 z-40 cursor-pointer rounded-full bg-white w-12 h-12 grid place-items-center shadow-md"
@@ -23,7 +23,7 @@ const { y } = useWindowScroll();
         @click="scrollToTop"
       />
     </div>
-  </Transition>
+  </transition>
 </template>
 
 <style scoped>

@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import type { UploadDashboardContext } from "~/composables/useUploadDashboard";
-
 const props = defineProps<{
-  context: UploadDashboardContext;
+  show: boolean;
+  newAlbum: {
+    title: string;
+    slug: string;
+    description: string;
+  };
+  creating: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "close"): void;
   (e: "create"): void;
+  (e: "update:title", value: string): void;
+  (e: "update:description", value: string): void;
 }>();
 
-const isCreatingAlbum = computed(() =>
-  Boolean(props.context.creatingAlbum.value)
-);
 const showModal = computed({
-  get: () => Boolean(props.context.showCreateModal.value),
+  get: () => props.show,
   set: (value: boolean) => {
-    props.context.showCreateModal.value = value;
+    if (!value) emit('close');
   },
 });
 </script>
@@ -43,21 +46,24 @@ const showModal = computed({
       <div class="space-y-4">
         <UFormGroup label="Title" required>
           <UInput
-            v-model="props.context.newAlbum.title"
+            :model-value="newAlbum.title"
+            @update:model-value="(val) => emit('update:title', val)"
             placeholder="Autumn Wedding"
           />
         </UFormGroup>
 
         <UFormGroup label="Slug" required>
           <UInput
-            v-model="props.context.newAlbum.slug"
+            :model-value="newAlbum.slug"
             placeholder="autumn-wedding"
+            disabled
           />
         </UFormGroup>
 
         <UFormGroup label="Description">
           <UTextarea
-            v-model="props.context.newAlbum.description"
+            :model-value="newAlbum.description"
+            @update:model-value="(val) => emit('update:description', val)"
             :rows="3"
             placeholder="Optional album description"
           />
@@ -69,7 +75,7 @@ const showModal = computed({
           <UButton variant="ghost" @click="emit('close')">Cancel</UButton>
           <UButton
             color="black"
-            :loading="isCreatingAlbum"
+            :loading="creating"
             @click="emit('create')"
           >
             Create album

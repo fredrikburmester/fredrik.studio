@@ -24,6 +24,8 @@
     "nuxt": "^3.6.1"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.11.2",
+    "@tanstack/vue-query": "^5.90.2",
     "@vercel/analytics": "^1.0.1",
     "@vercel/blob": "^2.0.0",
     "@vercel/kv": "^3.0.0",
@@ -34,6 +36,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "fuse.js": "^6.6.2",
     "image-size": "^1.0.2",
+    "pinia": "^3.0.3",
     "prettier": "^2.8.8",
     "sharp": "0.33.0"
   }

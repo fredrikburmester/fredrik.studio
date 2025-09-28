@@ -1,13 +1,28 @@
 <script setup lang="ts">
-import type { UploadDashboardContext } from "~/composables/useUploadDashboard";
+import type { AlbumResponse } from "~/types/redis";
 
 const props = defineProps<{
-  context: UploadDashboardContext;
+  albums: AlbumResponse[];
+  loading: boolean;
+  selectedSlug: string | null;
 }>();
 
 const emit = defineEmits<{
   (e: "select", slug: string): void;
 }>();
+
+const store = useUploadStore()
+
+const sortedAlbums = computed(() => {
+  return [...props.albums].sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
+})
+
+const totalAlbumCount = computed(() => props.albums.length)
+const promotedCount = computed(() => 
+  props.albums.filter(album => album.promoted).length
+)
 
 const handleSelect = (slug: string) => {
   emit("select", slug);
@@ -20,69 +35,45 @@ const handleSelect = (slug: string) => {
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold">Albums</h2>
         <UBadge color="gray" variant="soft" size="xs">
-          {{ context.filteredAlbums?.length || 0 }}/{{
-            context.totalAlbumCount
-          }}
+          {{ sortedAlbums.length }}/{{ totalAlbumCount }}
         </UBadge>
       </div>
     </template>
 
     <div class="space-y-5">
-      <div class="space-y-4">
-        <UFormGroup label="Admin password" size="sm">
-          <UInput
-            v-model="context.password.value"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Enter password"
-          />
-        </UFormGroup>
-
-        <UInput
-          v-model="context.albumSearch.value"
-          icon="i-heroicons-magnifying-glass"
-          placeholder="Search albums"
-          size="sm"
-          clearable
-        />
-      </div>
-
-      <UDivider />
-
       <div class="flex items-center justify-between text-xs text-gray-500">
-        <span>Albums ({{ context.filteredAlbums?.length || 0 }})</span>
-        <span>Promoted {{ context.promotedCount }}/4</span>
+        <span>Albums ({{ sortedAlbums.length }})</span>
+        <span>Promoted {{ promotedCount }}/4</span>
       </div>
 
       <div class="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
-        <UAlert
-          v-if="
-            !context.loadingAlbums.value &&
-            (!context.filteredAlbums || context.filteredAlbums.length === 0)
-          "
-          color="gray"
-          title="No matching albums"
-          description="Adjust your search or create a new album"
-        />
+        <template v-if="loading">
+          <USkeleton
+            class="h-14 rounded-lg"
+            v-for="n in 4"
+            :key="`s-${n}`"
+          />
+        </template>
+        
+        <template v-else-if="!sortedAlbums.length">
+          <UAlert
+            color="gray"
+            title="No albums found"
+            description="Create a new album to get started"
+          />
+        </template>
 
-        <USkeleton
-          v-if="context.loadingAlbums.value"
-          class="h-14 rounded-lg"
-          v-for="n in 4"
-          :key="`s-${n}`"
-        />
-
-        <button
-          v-for="album in context.filteredAlbums || []"
-          v-show="!context.loadingAlbums.value"
-          :key="album.slug"
-          class="w-full"
-          @click="handleSelect(album.slug)"
-        >
+        <template v-else>
+          <button
+            v-for="album in sortedAlbums"
+            :key="album.slug"
+            class="w-full"
+            @click="handleSelect(album.slug)"
+          >
           <div
             class="rounded-lg border p-4 text-left transition-colors"
             :class="[
-              album.slug === context.selectedSlug
+              album.slug === selectedSlug
                 ? 'border-black bg-black/5'
                 : 'border-transparent hover:bg-gray-50',
             ]"
@@ -93,7 +84,7 @@ const handleSelect = (slug: string) => {
               >
                 <img
                   v-if="album.coverImage"
-                  :src="`${context.blobBaseUrl}/${album.coverImage}`"
+                  :src="`${store.blobBaseUrl}/${album.coverImage}`"
                   class="h-full w-full object-cover"
                   alt="Album cover"
                 />
@@ -118,16 +109,17 @@ const handleSelect = (slug: string) => {
             <div
               class="mt-3 flex items-center justify-between text-xs text-gray-500"
             >
-              <span>{{ album.imageCount ?? 0 }} images</span>
+              <span>{{ album.imageCount }} images</span>
               <span
-                v-if="context.selectedSlug === album.slug"
+                v-if="selectedSlug === album.slug"
                 class="text-black font-medium"
               >
                 Active
               </span>
             </div>
           </div>
-        </button>
+          </button>
+        </template>
       </div>
     </div>
   </UCard>

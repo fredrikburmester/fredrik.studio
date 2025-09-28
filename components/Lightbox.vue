@@ -62,7 +62,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Transition name="fade">
+  <transition name="fade">
     <div
       v-if="isOpen"
       class="fixed top-0 left-0 backdrop-brightness-[0.5] backdrop-blur-xl w-screen h-screen grid place-items-center z-50"
@@ -110,7 +110,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
-  </Transition>
+  </transition>
 </template>
 
 <style scoped>

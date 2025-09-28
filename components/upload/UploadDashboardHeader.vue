@@ -1,20 +1,15 @@
 <script setup lang="ts">
-import type { UploadDashboardContext } from "~/composables/useUploadDashboard";
+import type { AlbumResponse } from "~/types/redis";
 
 const props = defineProps<{
-  context: UploadDashboardContext;
+  albums: AlbumResponse[];
+  loading: boolean;
 }>();
 
 defineEmits<{
   (e: "refresh"): void;
   (e: "create"): void;
 }>();
-
-const isLoading = computed(() => {
-  return Boolean(
-    props.context.loadingAlbums.value || props.context.loadingAlbumDetails.value
-  );
-});
 </script>
 
 <template>
@@ -30,7 +25,7 @@ const isLoading = computed(() => {
       <UButton
         color="gray"
         variant="outline"
-        :loading="isLoading"
+        :loading="loading"
         @click="$emit('refresh')"
       >
         <UIcon name="i-heroicons-arrow-path" class="mr-1" />

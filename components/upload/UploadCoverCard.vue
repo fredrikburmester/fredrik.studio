@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import type { UploadDashboardContext } from "~/composables/useUploadDashboard";
-
 const props = defineProps<{
-  context: UploadDashboardContext;
+  albumMeta: {
+    title: string;
+    description: string;
+    coverImage: string;
+    promoted: boolean;
+    imageCount: number;
+    createdAt: string;
+  };
+  coverFile: File | null;
+  uploading: boolean;
+  blobBaseUrl: string;
 }>();
 
 const emit = defineEmits<{
@@ -10,9 +18,12 @@ const emit = defineEmits<{
   (e: "select", files: FileList | null): void;
 }>();
 
-const isUploadingCover = computed(() =>
-  Boolean(props.context.uploadingCover.value)
-);
+const blobCoverImage = computed(() => {
+  if (!props.albumMeta.coverImage) return ""
+  return props.albumMeta.coverImage.startsWith('http')
+    ? props.albumMeta.coverImage
+    : `${props.blobBaseUrl}/${props.albumMeta.coverImage}`
+})
 
 const onFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement | null;
@@ -21,7 +32,7 @@ const onFileChange = (event: Event) => {
 </script>
 
 <template>
-  <UCard v-if="context.layout.showCover" class="border border-gray-200">
+  <UCard class="border border-gray-200">
     <template #header>
       <div class="flex items-center justify-between">
         <div>
@@ -33,9 +44,9 @@ const onFileChange = (event: Event) => {
             variant="ghost"
             size="sm"
             color="gray"
-            :to="context.blobCoverImage || undefined"
+            :to="blobCoverImage || undefined"
             target="_blank"
-            :disabled="!context.blobCoverImage"
+            :disabled="!blobCoverImage"
           >
             View
           </UButton>
@@ -43,8 +54,8 @@ const onFileChange = (event: Event) => {
             color="black"
             variant="outline"
             size="sm"
-            :loading="isUploadingCover"
-            :disabled="isUploadingCover"
+            :loading="uploading"
+            :disabled="uploading"
             @click="$emit('upload')"
           >
             Upload cover
@@ -59,8 +70,8 @@ const onFileChange = (event: Event) => {
           class="aspect-video rounded-xl border border-gray-200 bg-gray-100 flex items-center justify-center overflow-hidden"
         >
           <img
-            v-if="context.blobCoverImage"
-            :src="context.blobCoverImage"
+            v-if="blobCoverImage"
+            :src="blobCoverImage"
             class="h-full w-full object-cover"
             alt="Album cover"
           />

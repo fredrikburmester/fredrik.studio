@@ -4,11 +4,14 @@ const blobDomain = blobBaseUrl ? new URL(blobBaseUrl).host : undefined;
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ["@nuxt/image", "@nuxt/ui"],
+  modules: ["@nuxt/image", "@nuxt/ui", "@pinia/nuxt"],
   colorMode: {
     preference: "light",
   },
-  plugins: [{ src: "~/plugins/vercel.ts", mode: "client" }],
+  plugins: [
+    { src: "~/plugins/vercel.ts", mode: "client" },
+    { src: "~/plugins/tanstack-query.client.ts", mode: "client" },
+  ],
   app: {
     pageTransition: { name: "page", mode: "out-in" },
   },
