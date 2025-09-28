@@ -1,12 +1,12 @@
 2
 <script setup lang="ts">
-import UploadDashboardHeader from "~/components/upload/UploadDashboardHeader.vue";
-import UploadDashboardMetrics from "~/components/upload/UploadDashboardMetrics.vue";
-import UploadSidebar from "~/components/upload/UploadSidebar.vue";
-import UploadDetailsCard from "~/components/upload/UploadDetailsCard.vue";
-import UploadCoverCard from "~/components/upload/UploadCoverCard.vue";
-import UploadImagesCard from "~/components/upload/UploadImagesCard.vue";
-import UploadCreateModal from "~/components/upload/UploadCreateModal.vue";
+import UploadDashboardHeader from "../components/upload/UploadDashboardHeader.vue";
+import UploadDashboardMetrics from "../components/upload/UploadDashboardMetrics.vue";
+import UploadSidebar from "../components/upload/UploadSidebar.vue";
+import UploadDetailsCard from "../components/upload/UploadDetailsCard.vue";
+import UploadCoverCard from "../components/upload/UploadCoverCard.vue";
+import UploadImagesCard from "../components/upload/UploadImagesCard.vue";
+import UploadCreateModal from "../components/upload/UploadCreateModal.vue";
 import {
   useAlbumsQuery,
   useAlbumQuery,
@@ -18,7 +18,7 @@ import {
   useTogglePromotedMutation,
   useUpdateAlbumMutation,
   useDeleteAlbumMutation,
-} from "~/composables/useAlbumsQuery";
+} from "../composables/useAlbumsQuery";
 
 // This page should only render on the client side
 definePageMeta({
@@ -117,7 +117,7 @@ const handleCreateAlbum = async () => {
     useToast().add({
       title: "Missing fields",
       description: "Title and slug are required",
-      color: "red",
+      color: "error",
     });
     return;
   }
@@ -154,7 +154,7 @@ const handleUploadCover = async () => {
     useToast().add({
       title: "No file",
       description: "Select a cover image first",
-      color: "red",
+      color: "error",
     });
     return;
   }
@@ -203,7 +203,7 @@ const handleTogglePromoted = async () => {
       useToast().add({
         title: "Limit reached",
         description: "You can only promote up to 4 albums",
-        color: "red",
+        color: "error",
       });
       return;
     }
@@ -249,7 +249,7 @@ const handleUploadImages = async () => {
     useToast().add({
       title: "No files",
       description: "Select images to upload",
-      color: "red",
+      color: "error",
     });
     return;
   }
@@ -369,8 +369,8 @@ const handleRemoveImage = async (name: string) => {
       :creating="createAlbumMutation.isPending?.value || false"
       @close="handleCloseCreateModal"
       @create="handleCreateAlbum"
-      @update:title="(val: string) => store.newAlbum.title = val"
-      @update:description="(val: string) => store.newAlbum.description = val"
+      @update:title="(val: string) => (store.newAlbum.title = val)"
+      @update:description="(val: string) => (store.newAlbum.description = val)"
     />
 
     <!-- Password Prompt Modal -->

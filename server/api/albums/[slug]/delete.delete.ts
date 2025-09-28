@@ -1,5 +1,5 @@
 import { createError } from "#imports";
-import { deleteImageFromAlbum } from "~/server/utils/uploader";
+import { deleteImageFromAlbum } from "../../../utils/uploader";
 
 export default defineEventHandler(async (event) => {
   if (getMethod(event) !== "DELETE") {

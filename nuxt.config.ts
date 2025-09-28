@@ -3,7 +3,9 @@ const blobDomain = blobBaseUrl ? new URL(blobBaseUrl).host : undefined;
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  compatibilityDate: "2025-09-28",
   devtools: { enabled: true },
+  srcDir: "app/",
   modules: ["@nuxt/image", "@nuxt/ui", "@pinia/nuxt"],
   colorMode: {
     preference: "light",

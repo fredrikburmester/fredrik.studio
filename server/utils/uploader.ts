@@ -11,7 +11,7 @@ import {
   getAlbumsFromBlobStorage,
   upsertAlbumsInBlobStorage,
 } from "./blob-storage";
-import type { ReturnItem, AlbumMeta } from "~/types";
+import type { ReturnItem, AlbumMeta } from "../../types";
 
 type ProcessedImage = {
   original: Buffer;
@@ -219,7 +219,9 @@ export const deleteImageFromAlbum = async (
 ) => {
   // Get current album metadata to verify image exists
   const existingMeta = await getAlbumMetaFromBlobStorage(albumSlug);
-  const imageToDelete = existingMeta.find((item) => item.name === filename);
+  const imageToDelete = existingMeta.find(
+    (item: ReturnItem) => item.name === filename
+  );
 
   if (!imageToDelete) {
     throw createError({
@@ -249,7 +251,9 @@ export const deleteImageFromAlbum = async (
 
   // Update album metadata by removing the deleted image
   console.log(`Deleting image "${filename}" from album ${albumSlug}`);
-  const updatedMeta = existingMeta.filter((item) => item.name !== filename);
+  const updatedMeta = existingMeta.filter(
+    (item: ReturnItem) => item.name !== filename
+  );
 
   if (updatedMeta.length === existingMeta.length) {
     console.warn(
@@ -272,7 +276,7 @@ export const deleteImageFromAlbum = async (
 
   // Check if deleted image was the cover image and update if needed
   const albums = await getAlbumsFromBlobStorage();
-  const album = albums.find((a) => a.slug === albumSlug);
+  const album = albums.find((a: AlbumMeta) => a.slug === albumSlug);
   const deletedImagePath = buildBlobPath(basePath, filename);
 
   if (album?.coverImage === deletedImagePath) {
@@ -282,7 +286,7 @@ export const deleteImageFromAlbum = async (
         ? buildBlobPath(basePath, updatedMeta[0].name)
         : undefined;
 
-    const updatedAlbums = albums.map((a) =>
+    const updatedAlbums = albums.map((a: AlbumMeta) =>
       a.slug === albumSlug ? { ...a, coverImage: newCoverImage } : a
     );
 
