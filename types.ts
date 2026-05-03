@@ -20,19 +20,3 @@ export type AlbumMeta = {
 };
 
 export type AlbumCollection = AlbumMeta[];
-
-export type UploadPayload = {
-  password: string;
-  album: string;
-  createAlbum?: {
-    title: string;
-    description?: string;
-    coverImage?: string;
-  };
-};
-
-export type UploadResponse = {
-  success: boolean;
-  uploaded: ReturnItem[];
-  album?: AlbumMeta;
-};

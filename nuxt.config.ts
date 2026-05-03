@@ -7,6 +7,7 @@ export default defineNuxtConfig({
   srcDir: "app/",
   devtools: { enabled: false },
   modules: ["@nuxt/image", "@nuxt/ui", "@pinia/nuxt"],
+  css: ["~/assets/css/main.css"],
   colorMode: {
     preference: "light",
   },
