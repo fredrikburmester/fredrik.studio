@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
-import type { AlbumResponse, RedisAlbum, RedisImage } from "~/types/redis";
+import type { AlbumMeta, ReturnItem } from "~/types";
 
 // Albums list query
 export const useAlbumsQuery = () => {
@@ -15,7 +15,7 @@ export const useAlbumsQuery = () => {
 
   return useQuery({
     queryKey: ["albums"],
-    queryFn: async (): Promise<AlbumResponse[]> => {
+    queryFn: async (): Promise<AlbumMeta[]> => {
       return await $fetch("/api/albums");
     },
   });
@@ -36,7 +36,7 @@ export const useAlbumQuery = (slug: MaybeRefOrGetter<string | null>) => {
 
   return useQuery({
     queryKey: computed(() => ["album", toValue(slug)]),
-    queryFn: async (): Promise<RedisAlbum> => {
+    queryFn: async (): Promise<AlbumMeta> => {
       const albumSlug = toValue(slug);
       if (!albumSlug) throw new Error("No album slug provided");
       return await $fetch(`/api/albums/${albumSlug}/album`);
@@ -60,7 +60,7 @@ export const useAlbumImagesQuery = (slug: MaybeRefOrGetter<string | null>) => {
 
   return useQuery({
     queryKey: computed(() => ["album-images", toValue(slug)]),
-    queryFn: async (): Promise<RedisImage[]> => {
+    queryFn: async (): Promise<ReturnItem[]> => {
       const albumSlug = toValue(slug);
       if (!albumSlug) throw new Error("No album slug provided");
       return await $fetch(`/api/albums/${albumSlug}/meta`);

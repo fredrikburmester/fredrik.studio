@@ -5,7 +5,6 @@ const props = defineProps<{
     description: string;
     coverImage: string;
     promoted: boolean;
-    imageCount: number;
     createdAt: string;
   };
   coverFile: File | null;

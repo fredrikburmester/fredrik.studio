@@ -5,7 +5,6 @@ const props = defineProps<{
     description: string;
     coverImage: string;
     promoted: boolean;
-    imageCount: number;
     createdAt: string;
   };
   selectedSlug: string | null;
@@ -90,11 +89,7 @@ const store = useUploadStore()
       </div>
     </div>
 
-    <div class="mt-6 grid gap-4 sm:grid-cols-3">
-      <div class="rounded-lg border border-gray-200 p-3 text-center">
-        <p class="text-xs uppercase text-gray-400">Images</p>
-        <p class="text-xl font-semibold">{{ albumMeta.imageCount }}</p>
-      </div>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2">
       <div class="rounded-lg border border-gray-200 p-3 text-center">
         <p class="text-xs uppercase text-gray-400">Promoted</p>
         <p class="text-xl font-semibold">

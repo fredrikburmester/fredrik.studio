@@ -354,6 +354,7 @@ const handleRemoveImage = async (name: string) => {
                 deleteImageMutation.isPending?.value ? 'deleting' : null
               "
               :blob-base-url="store.blobBaseUrl"
+              :album-slug="store.selectedSlug ?? ''"
               @handle-files="handleImageFiles"
               @upload-images="handleUploadImages"
               @remove-image="handleRemoveImage"

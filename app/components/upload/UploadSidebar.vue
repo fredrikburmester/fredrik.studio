@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { AlbumResponse } from "~/types/redis";
+import type { AlbumMeta } from "~/types";
 
 const props = defineProps<{
-  albums: AlbumResponse[];
+  albums: AlbumMeta[];
   loading: boolean;
   selectedSlug: string | null;
 }>();
@@ -107,9 +107,8 @@ const handleSelect = (slug: string) => {
             </div>
 
             <div
-              class="mt-3 flex items-center justify-between text-xs text-gray-500"
+              class="mt-3 flex items-center justify-end text-xs text-gray-500"
             >
-              <span>{{ album.imageCount }} images</span>
               <span
                 v-if="selectedSlug === album.slug"
                 class="text-black font-medium"

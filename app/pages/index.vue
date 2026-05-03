@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { AlbumResponse } from "@/types/redis";
+import type { AlbumMeta } from "@/types";
 
 const img = useImage();
 
 const { public: runtimePublic } = useRuntimeConfig();
 const blobBaseUrl = runtimePublic.blobBaseUrl;
 
-const { data: albums } = await useFetch<AlbumResponse[]>(
+const { data: albums } = await useFetch<AlbumMeta[]>(
   "/api/albums/promoted",
   {
     key: "promoted-albums",

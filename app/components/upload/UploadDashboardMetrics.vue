@@ -1,20 +1,17 @@
 <script setup lang="ts">
-import type { AlbumResponse } from "~/types/redis";
+import type { AlbumMeta } from "~/types";
 
 const props = defineProps<{
-  albums: AlbumResponse[];
+  albums: AlbumMeta[];
   loading: boolean;
 }>();
 
 const totalAlbumCount = computed(() => props.albums.length)
-const promotedCount = computed(() => 
+const promotedCount = computed(() =>
   props.albums.filter(album => album.promoted).length
 )
-const totalImageCount = computed(() => 
-  props.albums.reduce((sum, album) => sum + (album.imageCount ?? 0), 0)
-)
 const newestAlbum = computed(() => {
-  const sorted = [...props.albums].sort((a, b) => 
+  const sorted = [...props.albums].sort((a, b) =>
     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   )
   return sorted[0] || null
@@ -22,7 +19,7 @@ const newestAlbum = computed(() => {
 </script>
 
 <template>
-  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
     <UCard class="border border-gray-200">
       <div class="flex items-center justify-between">
         <div>
@@ -37,19 +34,6 @@ const newestAlbum = computed(() => {
       <p class="mt-3 text-xs text-gray-400">
         {{ promotedCount }} promoted ·
         {{ newestAlbum?.title ?? "No recent albums" }} latest
-      </p>
-    </UCard>
-
-    <UCard class="border border-gray-200">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm text-gray-500">Total images</p>
-          <p class="text-3xl font-semibold">{{ totalImageCount }}</p>
-        </div>
-        <UIcon name="i-heroicons-photo" class="text-2xl text-gray-300" />
-      </div>
-      <p class="mt-3 text-xs text-gray-400">
-        Across all albums
       </p>
     </UCard>
 

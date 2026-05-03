@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { AlbumResponse } from "~/types/redis";
+import type { AlbumMeta } from "~/types";
 
 const props = defineProps<{
-  albums: AlbumResponse[];
+  albums: AlbumMeta[];
   loading: boolean;
 }>();
 

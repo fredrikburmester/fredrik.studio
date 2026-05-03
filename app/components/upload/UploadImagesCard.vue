@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import type { RedisImage } from "~/types/redis";
+import type { ReturnItem } from "~/types";
 
 const props = defineProps<{
-  images: RedisImage[];
+  images: ReturnItem[];
   imageFiles: File[];
   loadingDetails: boolean;
   uploading: boolean;
   deletingImage: string | null;
   blobBaseUrl: string;
+  albumSlug: string;
 }>();
 
 const emit = defineEmits<{
@@ -115,7 +116,7 @@ const triggerInput = () => {
         >
           <div class="aspect-video bg-gray-100">
             <img
-              :src="`${blobBaseUrl}/${image.paths.thumb}`"
+              :src="`${blobBaseUrl}/albums/${albumSlug}/thumbs/${image.name}`"
               :alt="image.name"
               class="h-full w-full object-cover"
             />
@@ -147,7 +148,7 @@ const triggerInput = () => {
                 }"
               />
               <span class="text-[11px] text-gray-400 truncate">
-                {{ image.paths.original }}
+                {{ `albums/${albumSlug}/${image.name}` }}
               </span>
             </div>
           </div>

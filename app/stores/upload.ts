@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { AlbumResponse, RedisAlbum, RedisImage } from "../../types/redis";
+import type { AlbumMeta, ReturnItem } from "../../types";
 
 export const useUploadStore = defineStore("upload", () => {
   // Runtime config
@@ -22,10 +22,9 @@ export const useUploadStore = defineStore("upload", () => {
     description: "",
     coverImage: "",
     promoted: false,
-    imageCount: 0,
     createdAt: "",
   });
-  const albumImages = ref<RedisImage[]>([]);
+  const albumImages = ref<ReturnItem[]>([]);
 
   // File upload state
   const imageFiles = ref<File[]>([]);
@@ -174,22 +173,20 @@ export const useUploadStore = defineStore("upload", () => {
       description: "",
       coverImage: "",
       promoted: false,
-      imageCount: 0,
       createdAt: "",
     });
   };
 
   // Set album details
-  const setAlbumDetails = (album: RedisAlbum) => {
+  const setAlbumDetails = (album: AlbumMeta) => {
     albumMeta.title = album.title;
     albumMeta.description = album.description ?? "";
     albumMeta.coverImage = album.coverImage || "";
     albumMeta.promoted = !!album.promoted;
-    albumMeta.imageCount = album.imageCount ?? 0;
     albumMeta.createdAt = album.createdAt;
   };
 
-  const setAlbumImages = (images: RedisImage[]) => {
+  const setAlbumImages = (images: ReturnItem[]) => {
     albumImages.value = images ?? [];
   };
 
