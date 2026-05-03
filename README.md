@@ -1,28 +1,42 @@
 # fredrik.studio
 
-A new version of my photography website, this time made with Nuxt. ⛰️
+My photography portfolio, built with Nuxt and hosted on Vercel.
 
-The point of this version of the website is to create a edge hosted version, completely relying on modern solutions from [Cloudflare](https://www.cloudflare.com/) and [Firebase](https://firebase.google.com/).
+## Stack
 
-## 🚀 Website
+- **Nuxt 4** (pinned to ~4.1.3)
+- **Node** runtime, **pnpm** package manager
+- **Vercel Blob** for image files _and_ album/image metadata (JSON)
+- **Sharp** for image processing (original + 800px thumbnail + 24px LQIP)
+- **TanStack Query** + **Pinia** for client state
+- **Nuxt UI** + **Tailwind**
 
-| Branch      | Environment | URL                        |
-| ----------- | ----------- | -------------------------- |
-| main        | prod        | https://dev.fredrik.studio |
-| development | dev         |                            |
+There is no database. Album and image metadata live as versioned JSON files inside the Blob store next to the photos themselves.
 
-## Images
+## Getting started
 
-Like in my [other photography website](https://github.com/fredrikburmester/fredrikburmester-express), image loading is a top priority. That's why this time i've tried to decentralize and use Cloudflare to deliver my photos.
+```sh
+pnpm install
+pnpm run dev
+```
 
-### ☁️ Cloudflare
+The app expects these env vars in `.env`:
 
-Images are stored and loaded from Cloudflare Images. Images are loaded in different variants depending on the use case.
+| Variable | Purpose |
+|---|---|
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token (server-side writes) |
+| `NUXT_PUBLIC_BLOB_BASE_URL` | Public URL of the Blob store, e.g. `https://<store-id>.public.blob.vercel-storage.com` |
+| `UPLOAD_PASSWORD` | Password for `/upload` admin actions |
 
-### 🔥 Firebase
+## Admin upload
 
-To keep track of which images belong to which album a firebase firestore is used.
+`/upload` is a password-gated dashboard for creating albums, uploading images, setting cover images, and promoting albums to the home page.
 
-### 🐌 Lazy loading
+## Layout
 
-Since this website utilizes cloudflares optimized images I'll be relying entirely on the native `loading="lazy"` for this website.
+- `app/pages/` — public pages (`index`, `[album]`, `contact`, `upload`)
+- `app/components/` — gallery, lightbox, navbar, upload UI
+- `server/api/albums/` — CRUD endpoints
+- `server/utils/blob-storage.ts` — JSON-on-Blob helpers (read + mutate album collection and per-album image metadata)
+- `server/utils/blob.ts` — thin wrapper around `@vercel/blob`
+- `server/utils/uploader.ts` — image processing + upload pipeline
