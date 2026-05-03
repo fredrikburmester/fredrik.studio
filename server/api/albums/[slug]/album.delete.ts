@@ -1,6 +1,11 @@
 import { createError, readBody } from "#imports";
-import { albumService } from "../../../utils/kv-albums";
-import { imageService } from "../../../utils/kv-images";
+import {
+  findAlbumInBlobStorage,
+  getAlbumMetaFromBlobStorage,
+  upsertAlbumMetaInBlobStorage,
+  unpromoteAlbumInBlobStorage,
+  deleteAlbumFromBlobStorage,
+} from "../../../utils/blob-storage";
 import { deleteFromBlob, buildBlobPath } from "../../../utils/blob";
 
 export default defineEventHandler(async (event) => {
@@ -25,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Check if album exists
-    const album = await albumService.getAlbum(slug);
+    const album = await findAlbumInBlobStorage(slug);
     if (!album) {
       throw createError({
         statusCode: 404,
@@ -34,7 +39,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Get all images to delete from blob storage
-    const images = await imageService.getAlbumImages(slug);
+    const images = await getAlbumMetaFromBlobStorage(slug);
 
     // Build list of blob paths to delete
     const blobPathsToDelete: string[] = [];
@@ -69,15 +74,16 @@ export default defineEventHandler(async (event) => {
       await deleteFromBlob(blobPathsToDelete);
     }
 
-    // Delete from Redis
-    await Promise.all([
-      // Remove album from promoted list (if it's promoted)
-      album.promoted ? albumService.unpromoteAlbum(slug) : Promise.resolve(),
-      // Clear all album images
-      imageService.clearAlbumImages(slug),
-      // Delete album metadata
-      albumService.deleteAlbum(slug),
-    ]);
+    // Empty the per-album image meta
+    await upsertAlbumMetaInBlobStorage(slug, []);
+
+    // Remove album from promoted list (if it's promoted)
+    if (album.promoted) {
+      await unpromoteAlbumInBlobStorage(slug);
+    }
+
+    // Delete album from collection
+    await deleteAlbumFromBlobStorage(slug);
 
     return {
       success: true,

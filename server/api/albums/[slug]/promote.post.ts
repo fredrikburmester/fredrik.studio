@@ -1,4 +1,8 @@
-import { albumService } from "../../../utils/kv-albums";
+import {
+  findAlbumInBlobStorage,
+  promoteAlbumInBlobStorage,
+  unpromoteAlbumInBlobStorage,
+} from "../../../utils/blob-storage";
 import { createError, readBody } from "#imports";
 
 export default defineEventHandler(async (event) => {
@@ -31,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Check if album exists
-    const albumExists = await albumService.albumExists(slug);
+    const albumExists = Boolean(await findAlbumInBlobStorage(slug));
     if (!albumExists) {
       throw createError({
         statusCode: 404,
@@ -41,7 +45,7 @@ export default defineEventHandler(async (event) => {
 
     // Update promoted status
     if (promoted) {
-      const success = await albumService.promoteAlbum(slug);
+      const success = await promoteAlbumInBlobStorage(slug);
       if (!success) {
         throw createError({
           statusCode: 400,
@@ -49,7 +53,7 @@ export default defineEventHandler(async (event) => {
         });
       }
     } else {
-      await albumService.unpromoteAlbum(slug);
+      await unpromoteAlbumInBlobStorage(slug);
     }
 
     return {

@@ -1,4 +1,7 @@
-import { albumService } from "../../../utils/kv-albums";
+import {
+  findAlbumInBlobStorage,
+  updateAlbumInBlobStorage,
+} from "../../../utils/blob-storage";
 import { createError, readBody } from "#imports";
 
 export default defineEventHandler(async (event) => {
@@ -36,7 +39,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const album = await albumService.getAlbum(slug);
+    const album = await findAlbumInBlobStorage(slug);
     if (!album) {
       throw createError({
         statusCode: 404,
@@ -44,9 +47,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    await albumService.updateAlbum(slug, updates);
-
-    const updatedAlbum = await albumService.getAlbum(slug);
+    const updatedAlbum = await updateAlbumInBlobStorage(slug, updates);
 
     return {
       success: true,

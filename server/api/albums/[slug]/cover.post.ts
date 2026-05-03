@@ -1,6 +1,6 @@
 import { readMultipartFormData, createError } from "#imports";
-import { albumService } from "../../../utils/kv-albums";
-import { uploadImageToBlob } from "../../../utils/blob-uploader";
+import { findAlbumInBlobStorage } from "../../../utils/blob-storage";
+import { uploadCoverImageToAlbum } from "../../../utils/uploader";
 
 export default defineEventHandler(async (event) => {
   const { slug } = getRouterParams(event);
@@ -77,28 +77,24 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Check if album exists
-    const albumExists = await albumService.albumExists(slug);
-    if (!albumExists) {
+    const album = await findAlbumInBlobStorage(slug);
+    if (!album) {
       throw createError({
         statusCode: 404,
         statusMessage: "Album not found",
       });
     }
 
-    // Upload cover image to blob storage
-    const imageData = await uploadImageToBlob({
-      albumSlug: slug,
-      filename: "cover.jpg",
+    // Upload cover image (also persists the new coverImage on the album)
+    const result = await uploadCoverImageToAlbum({
+      album,
       file: coverImageFile,
     });
 
-    // Update album's cover image in Redis
-    await albumService.updateCoverImage(slug, imageData.paths.original);
-
     return {
       success: true,
-      coverImage: imageData.paths.original,
-      meta: imageData,
+      coverImage: result.coverImage,
+      meta: result.meta,
     };
   } catch (error) {
     console.error("Failed to upload cover image:", error);

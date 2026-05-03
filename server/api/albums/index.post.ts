@@ -1,5 +1,8 @@
-import { albumService } from "../../utils/kv-albums";
-import type { RedisAlbum } from "~/types/redis";
+import {
+  findAlbumInBlobStorage,
+  upsertAlbumInBlobStorage,
+} from "../../utils/blob-storage";
+import type { AlbumMeta } from "~/types";
 import { createError, readBody } from "#imports";
 
 export default defineEventHandler(async (event) => {
@@ -35,7 +38,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const existing = await albumService.getAlbum(slug);
+    const existing = await findAlbumInBlobStorage(slug);
     if (existing) {
       throw createError({
         statusCode: 409,
@@ -43,7 +46,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const albumData: Omit<RedisAlbum, "imageCount"> = {
+    const albumData: AlbumMeta = {
       slug,
       title,
       description,
@@ -52,9 +55,9 @@ export default defineEventHandler(async (event) => {
       promoted: false,
     };
 
-    await albumService.createAlbum(albumData);
+    await upsertAlbumInBlobStorage(albumData);
 
-    const album = await albumService.getAlbum(slug);
+    const album = await findAlbumInBlobStorage(slug);
 
     return {
       success: true,

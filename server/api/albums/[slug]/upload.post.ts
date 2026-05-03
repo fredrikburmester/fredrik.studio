@@ -1,10 +1,13 @@
-import { albumService } from "../../../utils/kv-albums";
-import { imageService } from "../../../utils/kv-images";
 import {
-  uploadImageToBlob,
-  generateImageFilename,
-} from "../../../utils/blob-uploader";
-import type { RedisAlbum } from "../../../../types/redis";
+  findAlbumInBlobStorage,
+  ensureAlbumExistsInBlobStorage,
+  ensureAlbumCover,
+  getAlbumMetaFromBlobStorage,
+  upsertAlbumMetaInBlobStorage,
+} from "../../../utils/blob-storage";
+import { uploadImageToAlbum } from "../../../utils/uploader";
+import { buildBlobPath } from "../../../utils/blob";
+import type { AlbumMeta, ReturnItem } from "../../../../types";
 import { createError, readMultipartFormData, useRuntimeConfig } from "#imports";
 
 export default defineEventHandler(async (event) => {
@@ -70,7 +73,7 @@ export default defineEventHandler(async (event) => {
   const createAlbumFlag = fields.get("createAlbum");
 
   // Check if album exists
-  let album = await albumService.getAlbum(albumSlug);
+  let album = await findAlbumInBlobStorage(albumSlug);
 
   if (!album && !createAlbumFlag) {
     throw createError({
@@ -82,15 +85,15 @@ export default defineEventHandler(async (event) => {
 
   // Create album if it doesn't exist
   if (!album && createAlbumFlag) {
-    const newAlbum: Omit<RedisAlbum, "imageCount"> = {
+    const newAlbum: AlbumMeta = {
       slug: albumSlug,
       title: fields.get("title") || albumSlug,
       description: fields.get("description"),
       createdAt: new Date().toISOString(),
       promoted: false,
     };
-    await albumService.createAlbum(newAlbum);
-    album = await albumService.getAlbum(albumSlug);
+    await ensureAlbumExistsInBlobStorage(newAlbum);
+    album = await findAlbumInBlobStorage(albumSlug);
   }
 
   if (!album) {
@@ -100,12 +103,12 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const uploadedImages = [];
+  // Read existing image meta ONCE before the loop
+  const existingMeta = await getAlbumMetaFromBlobStorage(albumSlug);
+  const runningMeta: ReturnItem[] = [...existingMeta];
+  const uploadedImages: ReturnItem[] = [];
 
-  // Get current image count for filename generation
-  const currentImageCount = await imageService.getImageCount(albumSlug);
-
-  // Upload all images to blob storage and Redis
+  // Upload all images to blob storage
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     if (!file.filename) {
@@ -114,26 +117,28 @@ export default defineEventHandler(async (event) => {
 
     const buffer = file.data as Buffer;
 
-    // Generate filename
-    const filename = generateImageFilename(currentImageCount + i);
-
-    // Upload to blob storage
-    const imageData = await uploadImageToBlob({
-      albumSlug,
-      filename,
+    const result = await uploadImageToAlbum({
+      album,
       file: buffer,
+      existingMeta: runningMeta,
     });
 
-    // Add to Redis
-    await imageService.addImageToAlbum(albumSlug, imageData);
-    uploadedImages.push(imageData);
+    // Strip imagePath; only persist ReturnItem fields
+    const { imagePath: _imagePath, ...meta } = result;
+    uploadedImages.push(meta);
+    runningMeta.push(meta);
+  }
+
+  // Persist per-album meta JSON once
+  if (uploadedImages.length > 0) {
+    await upsertAlbumMetaInBlobStorage(albumSlug, runningMeta);
   }
 
   // Set cover image if this is the first image in the album
-  if (uploadedImages.length > 0 && !album.coverImage) {
-    await albumService.updateCoverImage(
+  if (uploadedImages.length > 0) {
+    await ensureAlbumCover(
       albumSlug,
-      uploadedImages[0].paths.original
+      buildBlobPath("albums", albumSlug, uploadedImages[0].name)
     );
   }
 
