@@ -98,7 +98,7 @@ export const useCreateAlbumMutation = () => {
       toast.add({
         title: "Album created",
         description: `${variables.title} added`,
-        color: "green",
+        color: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["albums"] });
     },
@@ -108,7 +108,7 @@ export const useCreateAlbumMutation = () => {
       toast.add({
         title: "Create failed",
         description: message,
-        color: "red",
+        color: "error",
       });
     },
   });
@@ -149,7 +149,7 @@ export const useUploadImagesMutation = () => {
       toast.add({
         title: "Upload complete",
         description: "Images added to album",
-        color: "green",
+        color: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["albums"] });
       queryClient.invalidateQueries({ queryKey: ["album", variables.slug] });
@@ -163,7 +163,7 @@ export const useUploadImagesMutation = () => {
       toast.add({
         title: "Upload failed",
         description: message,
-        color: "red",
+        color: "error",
       });
     },
   });
@@ -201,7 +201,7 @@ export const useUploadCoverMutation = () => {
       toast.add({
         title: "Cover updated",
         description: "Album cover image updated",
-        color: "green",
+        color: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["albums"] });
       queryClient.invalidateQueries({ queryKey: ["album", variables.slug] });
@@ -212,7 +212,7 @@ export const useUploadCoverMutation = () => {
       toast.add({
         title: "Upload failed",
         description: message,
-        color: "red",
+        color: "error",
       });
     },
   });
@@ -249,7 +249,7 @@ export const useDeleteImageMutation = () => {
       toast.add({
         title: "Image deleted",
         description: `${variables.filename} was removed`,
-        color: "green",
+        color: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["albums"] });
       queryClient.invalidateQueries({ queryKey: ["album", variables.slug] });
@@ -263,7 +263,7 @@ export const useDeleteImageMutation = () => {
       toast.add({
         title: "Delete failed",
         description: message,
-        color: "red",
+        color: "error",
       });
     },
   });
@@ -302,7 +302,7 @@ export const useTogglePromotedMutation = () => {
         description: `Album has been ${
           variables.promoted ? "added to" : "removed from"
         } promoted albums`,
-        color: "green",
+        color: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["albums"] });
       queryClient.invalidateQueries({ queryKey: ["album", variables.slug] });
@@ -313,7 +313,7 @@ export const useTogglePromotedMutation = () => {
       toast.add({
         title: "Update failed",
         description: message,
-        color: "red",
+        color: "error",
       });
     },
   });
@@ -353,7 +353,7 @@ export const useUpdateAlbumMutation = () => {
       toast.add({
         title: "Album updated",
         description: "Details saved",
-        color: "green",
+        color: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["albums"] });
       queryClient.invalidateQueries({ queryKey: ["album", variables.slug] });
@@ -364,7 +364,7 @@ export const useUpdateAlbumMutation = () => {
       toast.add({
         title: "Save failed",
         description: message,
-        color: "red",
+        color: "error",
       });
     },
   });
@@ -405,7 +405,7 @@ export const useDeleteAlbumMutation = () => {
       toast.add({
         title: "Album deleted",
         description: `${variables.title} removed`,
-        color: "green",
+        color: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["albums"] });
     },
@@ -416,7 +416,7 @@ export const useDeleteAlbumMutation = () => {
       toast.add({
         title: "Delete failed",
         description: message,
-        color: "red",
+        color: "error",
       });
     },
   });

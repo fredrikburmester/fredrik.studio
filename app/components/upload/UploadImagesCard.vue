@@ -33,7 +33,7 @@ const triggerInput = () => {
           <h3 class="text-xl font-semibold">Album assets</h3>
         </div>
         <div class="flex items-center gap-2">
-          <UBadge color="gray" variant="soft" size="xs">
+          <UBadge color="neutral" variant="soft" size="xs">
             {{ context.albumImages.length }} items
           </UBadge>
         </div>
@@ -79,7 +79,7 @@ const triggerInput = () => {
         </ul>
         <div class="mt-4 flex justify-end">
           <UButton
-            color="black"
+            color="neutral"
             :loading="uploading"
             :disabled="uploading"
             @click="emit('uploadImages')"

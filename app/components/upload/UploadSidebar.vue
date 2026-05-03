@@ -34,7 +34,7 @@ const handleSelect = (slug: string) => {
     <template #header>
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold">Albums</h2>
-        <UBadge color="gray" variant="soft" size="xs">
+        <UBadge color="neutral" variant="soft" size="xs">
           {{ sortedAlbums.length }}/{{ totalAlbumCount }}
         </UBadge>
       </div>
@@ -57,7 +57,7 @@ const handleSelect = (slug: string) => {
         
         <template v-else-if="!sortedAlbums.length">
           <UAlert
-            color="gray"
+            color="neutral"
             title="No albums found"
             description="Create a new album to get started"
           />
@@ -95,7 +95,7 @@ const handleSelect = (slug: string) => {
                   <p class="truncate font-medium">
                     {{ album.title }}
                   </p>
-                  <UBadge v-if="album.promoted" size="xs" color="green">
+                  <UBadge v-if="album.promoted" size="xs" color="success">
                     Promoted
                   </UBadge>
                 </div>

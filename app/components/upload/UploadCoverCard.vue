@@ -42,7 +42,7 @@ const onFileChange = (event: Event) => {
           <UButton
             variant="ghost"
             size="sm"
-            color="gray"
+            color="neutral"
             :to="blobCoverImage || undefined"
             target="_blank"
             :disabled="!blobCoverImage"
@@ -50,7 +50,7 @@ const onFileChange = (event: Event) => {
             View
           </UButton>
           <UButton
-            color="black"
+            color="neutral"
             variant="outline"
             size="sm"
             :loading="uploading"
@@ -82,14 +82,14 @@ const onFileChange = (event: Event) => {
         </div>
       </div>
       <div class="space-y-4">
-        <UFormGroup label="Upload new cover">
+        <UFormField label="Upload new cover">
           <input
             type="file"
             accept="image/*"
             class="block w-full text-sm"
             @change="onFileChange"
           />
-        </UFormGroup>
+        </UFormField>
         <div
           class="rounded-lg border border-dashed border-gray-300 p-4 text-xs text-gray-500"
         >

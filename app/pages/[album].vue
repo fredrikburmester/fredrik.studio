@@ -117,7 +117,7 @@ useSeoMeta({
 <template>
   <UContainer :ui="{ constrained: '' }" class="pb-4 grid md:grid-cols-2 pt-24">
     <div class="md:fixed md:top-[calc(50vh-100px)] w-full md:pl-[5vw] pb-4">
-      <UButton label="Home" color="amber" class="mb-4" to="/">
+      <UButton label="Home" color="primary" class="mb-4" to="/">
         <template #leading>
           <UIcon name="i-heroicons-arrow-left-20-solid" />
         </template>
@@ -131,7 +131,7 @@ useSeoMeta({
         {{ $route.params.album }}
       </h1>
       <div v-if="data">
-        <UBadge color="amber">{{ data.length }} images</UBadge>
+        <UBadge color="primary">{{ data.length }} images</UBadge>
       </div>
     </div>
     <div class="md:col-start-2 z-10">

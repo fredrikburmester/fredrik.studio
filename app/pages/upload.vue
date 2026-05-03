@@ -376,31 +376,33 @@ const handleRemoveImage = async (name: string) => {
 
     <!-- Password Prompt Modal -->
     <UModal
-      :model-value="store.showPasswordPrompt"
-      @update:model-value="store.showPasswordPrompt = $event"
-      :prevent-close="true"
+      :open="store.showPasswordPrompt"
+      @update:open="store.showPasswordPrompt = $event"
+      :dismissible="false"
     >
-      <UCard>
-        <template #header>
-          <h3 class="text-lg font-semibold">Enter Admin Password</h3>
-        </template>
+      <template #content>
+        <UCard>
+          <template #header>
+            <h3 class="text-lg font-semibold">Enter Admin Password</h3>
+          </template>
 
-        <form @submit.prevent="store.submitPassword">
-          <UFormGroup label="Admin Password" class="mb-4">
-            <UInput
-              v-model="store.password"
-              type="password"
-              placeholder="Enter password"
-              autocomplete="current-password"
-              required
-            />
-          </UFormGroup>
+          <form @submit.prevent="store.submitPassword">
+            <UFormField label="Admin Password" class="mb-4">
+              <UInput
+                v-model="store.password"
+                type="password"
+                placeholder="Enter password"
+                autocomplete="current-password"
+                required
+              />
+            </UFormField>
 
-          <div class="flex justify-end">
-            <UButton type="submit" color="black"> Continue </UButton>
-          </div>
-        </form>
-      </UCard>
+            <div class="flex justify-end">
+              <UButton type="submit" color="neutral"> Continue </UButton>
+            </div>
+          </form>
+        </UCard>
+      </template>
     </UModal>
   </div>
 </template>

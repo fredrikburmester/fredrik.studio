@@ -48,7 +48,7 @@ const similarAlbum = computed(() => {
       <h3 class="font-bold mb-2">Did you mean?</h3>
       <UButton
         :to="`/${similarAlbum}`"
-        color="amber"
+        color="primary"
         trailing-icon="i-heroicons-arrow-right"
       >
         <span class="capitalize">{{ similarAlbum }}</span>

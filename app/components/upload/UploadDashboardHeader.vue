@@ -23,7 +23,7 @@ defineEmits<{
     </div>
     <div class="flex flex-wrap items-center gap-2">
       <UButton
-        color="gray"
+        color="neutral"
         variant="outline"
         :loading="loading"
         @click="$emit('refresh')"
@@ -31,7 +31,7 @@ defineEmits<{
         <UIcon name="i-heroicons-arrow-path" class="mr-1" />
         Refresh Data
       </UButton>
-      <UButton color="black" @click="$emit('create')">
+      <UButton color="neutral" @click="$emit('create')">
         <UIcon name="i-heroicons-plus" class="mr-1" />
         New Album
       </UButton>

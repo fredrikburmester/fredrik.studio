@@ -32,7 +32,7 @@ const store = useUploadStore()
             <p class="text-xs uppercase text-gray-500 tracking-wide">
               Album metadata
             </p>
-            <UBadge v-if="albumMeta.promoted" size="xs" color="green">
+            <UBadge v-if="albumMeta.promoted" size="xs" color="success">
               Promoted
             </UBadge>
           </div>
@@ -45,7 +45,7 @@ const store = useUploadStore()
         </div>
         <div class="flex flex-wrap items-center gap-2">
           <UButton
-            color="red"
+            color="error"
             variant="outline"
             size="sm"
             :loading="deleting"
@@ -55,7 +55,7 @@ const store = useUploadStore()
             Delete
           </UButton>
           <UButton
-            color="green"
+            color="success"
             variant="outline"
             size="sm"
             :loading="updatingPromoted"
@@ -70,22 +70,22 @@ const store = useUploadStore()
 
     <div class="grid md:grid-cols-2 gap-6">
       <div class="space-y-4">
-        <UFormGroup label="Title">
+        <UFormField label="Title">
           <UInput :model-value="albumMeta.title || ''" @update:model-value="(val) => store.albumMeta.title = val" />
-        </UFormGroup>
-        <UFormGroup label="Slug">
+        </UFormField>
+        <UFormField label="Slug">
           <UInput :model-value="selectedSlug ?? ''" disabled />
-        </UFormGroup>
+        </UFormField>
       </div>
       <div>
-        <UFormGroup label="Description">
+        <UFormField label="Description">
           <UTextarea
             :model-value="albumMeta.description || ''"
             @update:model-value="(val) => store.albumMeta.description = val"
             placeholder="Optional description"
             :rows="4"
           />
-        </UFormGroup>
+        </UFormField>
       </div>
     </div>
 
@@ -106,7 +106,7 @@ const store = useUploadStore()
 
     <div class="mt-6 flex justify-end">
       <UButton
-        color="black"
+        color="neutral"
         :loading="saving"
         :disabled="saving"
         @click="$emit('save')"
