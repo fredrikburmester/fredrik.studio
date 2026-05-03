@@ -1,0 +1,7 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+We always use pnpm as package manager and Node as runtime.

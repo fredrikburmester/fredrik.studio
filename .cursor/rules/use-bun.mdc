@@ -1,7 +1,0 @@
----
-description:
-globs:
-alwaysApply: true
----
-
-We always use bun as package manager and runner.

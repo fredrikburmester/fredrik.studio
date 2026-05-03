@@ -12,8 +12,8 @@
     "postinstall": "nuxt prepare",
     "lint:js": "eslint --ext \".ts,.vue\" --ignore-path .eslintignore .",
     "lint:prettier": "prettier --check . --ignore-path .prettierignore",
-    "lint": "bun run lint:js && bun run lint:prettier",
-    "lintfix": "prettier --write --list-different . --ignore-path .prettierignore && bun run lint:js --fix"
+    "lint": "pnpm run lint:js && pnpm run lint:prettier",
+    "lintfix": "prettier --write --list-different . --ignore-path .prettierignore && pnpm run lint:js --fix"
   },
   "devDependencies": {
     "@nuxt/image": "^1.8.1",
