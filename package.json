@@ -16,7 +16,6 @@
     "lintfix": "prettier --write --list-different . --ignore-path .prettierignore && bun run lint:js --fix"
   },
   "devDependencies": {
-    "@nuxt/devtools": "latest",
     "@nuxt/image": "^1.8.1",
     "@nuxt/ui": "^4.0.0",
     "@types/body-scroll-lock": "^3.1.2",
