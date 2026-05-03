@@ -290,3 +290,108 @@ export const ensureAlbumCover = async (slug: string, coverImage: string) => {
   updated[index] = { ...album, coverImage };
   await upsertAlbumsInBlobStorage(updated);
 };
+
+/**
+ * Promote an album (max 4 promoted enforced)
+ */
+export const promoteAlbumInBlobStorage = async (
+  slug: string
+): Promise<boolean> => {
+  const albums = await getAlbumsFromBlobStorage();
+  const index = albums.findIndex((album) => album.slug === slug);
+
+  if (index === -1) {
+    console.log(`Cannot promote: album ${slug} not found`);
+    return false;
+  }
+
+  const target = albums[index];
+  const promotedCount = albums.filter((album) => album.promoted).length;
+
+  if (promotedCount >= 4 && !target.promoted) {
+    console.log(
+      `Cannot promote ${slug}: already at max of 4 promoted albums`
+    );
+    return false;
+  }
+
+  const updated = [...albums];
+  updated[index] = { ...target, promoted: true };
+  await upsertAlbumsInBlobStorage(updated);
+  console.log(`Successfully promoted album ${slug}`);
+  return true;
+};
+
+/**
+ * Unpromote an album (no-op if missing)
+ */
+export const unpromoteAlbumInBlobStorage = async (
+  slug: string
+): Promise<void> => {
+  const albums = await getAlbumsFromBlobStorage();
+  const index = albums.findIndex((album) => album.slug === slug);
+
+  if (index === -1) {
+    console.log(`Cannot unpromote: album ${slug} not found`);
+    return;
+  }
+
+  const updated = [...albums];
+  updated[index] = { ...updated[index], promoted: false };
+  await upsertAlbumsInBlobStorage(updated);
+  console.log(`Successfully unpromoted album ${slug}`);
+};
+
+/**
+ * Update album fields (only defined fields are merged)
+ */
+export const updateAlbumInBlobStorage = async (
+  slug: string,
+  updates: Partial<
+    Pick<AlbumMeta, "title" | "description" | "coverImage" | "promoted">
+  >
+): Promise<AlbumMeta | null> => {
+  const albums = await getAlbumsFromBlobStorage();
+  const index = albums.findIndex((album) => album.slug === slug);
+
+  if (index === -1) {
+    console.log(`Cannot update: album ${slug} not found`);
+    return null;
+  }
+
+  const definedUpdates: Partial<AlbumMeta> = {};
+  if (updates.title !== undefined) definedUpdates.title = updates.title;
+  if (updates.description !== undefined)
+    definedUpdates.description = updates.description;
+  if (updates.coverImage !== undefined)
+    definedUpdates.coverImage = updates.coverImage;
+  if (updates.promoted !== undefined)
+    definedUpdates.promoted = updates.promoted;
+
+  const updatedAlbum: AlbumMeta = { ...albums[index], ...definedUpdates };
+  const updated = [...albums];
+  updated[index] = updatedAlbum;
+  await upsertAlbumsInBlobStorage(updated);
+  console.log(`Successfully updated album ${slug}`);
+  return updatedAlbum;
+};
+
+/**
+ * Delete an album from the collection. Per-album metadata JSON files are left
+ * in storage (versioned, non-destructive). Image-file deletion is handled at
+ * the endpoint level.
+ */
+export const deleteAlbumFromBlobStorage = async (
+  slug: string
+): Promise<void> => {
+  const albums = await getAlbumsFromBlobStorage();
+  const filtered = albums.filter((album) => album.slug !== slug);
+
+  if (filtered.length === albums.length) {
+    console.log(`Cannot delete: album ${slug} not found`);
+    return;
+  }
+
+  await upsertAlbumsInBlobStorage(filtered);
+  console.log(`Successfully removed album ${slug} from collection`);
+};

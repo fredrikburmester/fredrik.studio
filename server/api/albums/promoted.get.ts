@@ -1,5 +1,5 @@
-import { albumService } from "../../utils/kv-albums";
+import { getPromotedAlbumsFromBlobStorage } from "../../utils/blob-storage";
 
 export default defineEventHandler(async () => {
-  return await albumService.getPromotedAlbums();
+  return await getPromotedAlbumsFromBlobStorage();
 });

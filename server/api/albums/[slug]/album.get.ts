@@ -1,4 +1,4 @@
-import { albumService } from "../../../utils/kv-albums";
+import { findAlbumInBlobStorage } from "../../../utils/blob-storage";
 
 export default defineEventHandler(async (event) => {
   const { slug } = getRouterParams(event);
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const album = await albumService.getAlbum(slug);
+  const album = await findAlbumInBlobStorage(slug.toLowerCase());
 
   if (!album) {
     throw createError({

@@ -1,6 +1,6 @@
-import { imageService } from "../../../utils/kv-images";
+import { getAlbumMetaFromBlobStorage } from "../../../utils/blob-storage";
 
 export default defineEventHandler(async (event) => {
   const { slug } = event.context.params as { slug: string };
-  return await imageService.getAlbumImages(slug.toLowerCase());
+  return await getAlbumMetaFromBlobStorage(slug.toLowerCase());
 });
