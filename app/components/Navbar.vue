@@ -79,32 +79,33 @@ watch(
       <img src="/pp-lq.jpg" alt="profile picture" />
     </NuxtLink>
 
-    <USlideover v-model="isOpen" side="left">
-      <div class="flex flex-col mx-4 md:mx-8 my-6">
-        <div class="flex flex-row justify-between mb-4 px-0">
-          <p class="text-2xl font-bold">Albums</p>
-          <UIcon
-            name="i-heroicons-x-mark"
-            class="cursor-pointer text-2xl"
-            @click="isOpen = false"
-          />
+    <USlideover v-model:open="isOpen" side="left">
+      <template #content>
+        <div class="flex flex-col mx-4 md:mx-8 my-6">
+          <div class="flex flex-row justify-between mb-4 px-0">
+            <p class="text-2xl font-bold">Albums</p>
+            <UIcon
+              name="i-heroicons-x-mark"
+              class="cursor-pointer text-2xl"
+              @click="isOpen = false"
+            />
+          </div>
+          <nav class="flex flex-col">
+            <NuxtLink
+              v-for="link in links"
+              :key="link.to"
+              :to="link.to"
+              class="text-2xl py-1.5 hover:underline decoration-4 decoration-yellow-400 underline-offset-2"
+              active-class="underline decoration-4 decoration-yellow-400 underline-offset-2"
+              @click="isOpen = false"
+            >
+              {{ link.label }}
+            </NuxtLink>
+          </nav>
+          <hr class="my-8" />
+          <NuxtLink @click="isOpen = false" to="/contact">Contact me</NuxtLink>
         </div>
-        <UVerticalNavigation
-          :links="links"
-          :ui="{
-            ring: 'ring-0',
-            base: 'group relative flex items-center gap-2 focus:outline-none focus-visible:outline-none dark:focus-visible:outline-none before:absolute before:inset-px before:rounded-md disabled:cursor-not-allowed disabled:opacity-75',
-            active:
-              'text-gray-900 underline decoration-4 underline-offset-2 decoration-yellow-400 dark:before:bg-gray-800',
-            size: 'text-2xl',
-            padding: 'py-1.5 px-0',
-          }"
-        />
-        <hr class="my-8" />
-        <NuxtLink @click="isOpen = false" class="" to="/contact"
-          >Contact me</NuxtLink
-        >
-      </div>
+      </template>
     </USlideover>
   </div>
 </template>

@@ -90,7 +90,7 @@ const triggerInput = () => {
       </div>
     </div>
 
-    <UDivider class="my-6" />
+    <USeparator class="my-6" />
 
     <div
       v-if="loadingDetails"
