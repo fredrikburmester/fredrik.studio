@@ -8,6 +8,9 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ["@nuxt/image", "@nuxt/ui", "@pinia/nuxt"],
   css: ["~/assets/css/main.css"],
+  routeRules: {
+    "/admin/**": { ssr: false },
+  },
   colorMode: {
     preference: "light",
   },
@@ -20,6 +23,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     uploadPassword: process.env.UPLOAD_PASSWORD,
+    sessionSecret: process.env.SESSION_SECRET,
+    authEpoch: process.env.AUTH_EPOCH || "1",
+    blobReadWriteToken: process.env.BLOB_READ_WRITE_TOKEN,
     public: {
       blobBaseUrl: blobBaseUrl || "",
     },

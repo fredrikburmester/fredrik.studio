@@ -36,6 +36,7 @@
     "image-size": "^2.0.2",
     "pinia": "^3.0.3",
     "prettier": "^3.6.2",
-    "sharp": "^0.34.4"
+    "sharp": "^0.34.4",
+    "vue-draggable-plus": "^0.6.1"
   }
 }

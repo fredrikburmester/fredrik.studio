@@ -2,16 +2,14 @@
 import { useWindowScroll } from "@vueuse/core";
 import { useWindowSize } from "@vueuse/core";
 import { useRoute, useRuntimeConfig } from "#imports";
-import type { ReturnItem, ReturnType } from "@/types";
+import type { AlbumMeta, ReturnItem, ReturnType } from "@/types";
 
 const { y } = useWindowScroll();
 const { width } = useWindowSize();
 const route = useRoute();
 
-// fetch json file from "https://cdn.fredrik-studio/albums/" + route.params.album.toString().toLowerCase() + "/meta.json"
-// and store it in data
-
 const data = ref<ReturnType>();
+const albumMeta = ref<AlbumMeta | null>(null);
 const error = ref();
 
 const fetchAlbumMeta = async (album: string) => {
@@ -19,10 +17,17 @@ const fetchAlbumMeta = async (album: string) => {
   return response || [];
 };
 
+const fetchAlbum = async (slug: string) => {
+  return await $fetch<AlbumMeta>(`/api/albums/${slug}/album`);
+};
+
 onBeforeMount(async () => {
   try {
-    const album = route.params.album.toString().toLowerCase() as string;
-    const meta = await fetchAlbumMeta(album);
+    const slug = route.params.album.toString().toLowerCase();
+    const [meta, info] = await Promise.all([
+      fetchAlbumMeta(slug),
+      fetchAlbum(slug).catch(() => null),
+    ]);
 
     const sorted = meta.sort((a: ReturnItem, b: ReturnItem) => {
       const n1 = a.name.split(".")[0];
@@ -31,6 +36,7 @@ onBeforeMount(async () => {
     });
 
     data.value = sorted.reverse();
+    albumMeta.value = info;
   } catch (err) {
     error.value = err;
   }
@@ -60,7 +66,8 @@ const album = computed(() => {
   return route.params.album.toString().toLowerCase() as string;
 });
 
-const capitalizedAlbum = computed(() => {
+const displayTitle = computed(() => {
+  if (albumMeta.value?.title) return albumMeta.value.title;
   return album.value[0].toUpperCase() + album.value.slice(1);
 });
 
@@ -106,11 +113,11 @@ watch(
 );
 
 useSeoMeta({
-  title: "FB - " + capitalizedAlbum.value,
+  title: () => `FB - ${displayTitle.value}`,
   ogTitle: "Fredrik Burmester",
-  description: capitalizedAlbum,
-  ogDescription: capitalizedAlbum,
-  ogImage: seoImage.value,
+  description: () => displayTitle.value,
+  ogDescription: () => displayTitle.value,
+  ogImage: () => seoImage.value,
 });
 </script>
 
@@ -125,10 +132,11 @@ useSeoMeta({
       <h1
         ref="title"
         :class="[
-          'text-6xl md:text-[5vw] font-bold capitalize mb-2 origin-bottom-left',
+          'text-6xl md:text-[5vw] font-bold mb-2 origin-bottom-left',
+          !albumMeta?.title && 'capitalize',
         ]"
       >
-        {{ $route.params.album }}
+        {{ displayTitle }}
       </h1>
       <div v-if="data">
         <UBadge color="primary">{{ data.length }} images</UBadge>

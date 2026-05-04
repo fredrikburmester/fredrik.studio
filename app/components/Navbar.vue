@@ -29,6 +29,13 @@ const links = computed(() => {
   ];
 });
 
+const currentAlbumTitle = computed(() => {
+  const slug = route.params.album?.toString().toLowerCase();
+  if (!slug) return "";
+  const match = (albums.value || []).find((a) => a.slug === slug);
+  return match?.title ?? slug;
+});
+
 const title = ref();
 
 watch(
@@ -67,10 +74,10 @@ watch(
     <p
       ref="title"
       :class="[
-        'capitalize text-xl font-bold ml-4 md:ml-6 opacity-0 text-black',
+        'text-xl font-bold ml-4 md:ml-6 opacity-0 text-black',
       ]"
     >
-      {{ $route.params.album }}
+      {{ currentAlbumTitle }}
     </p>
     <NuxtLink
       to="/contact"

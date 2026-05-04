@@ -24,13 +24,19 @@ The app expects these env vars in `.env`:
 
 | Variable | Purpose |
 |---|---|
-| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token (server-side writes) |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token (server-side writes + client upload tokens) |
 | `NUXT_PUBLIC_BLOB_BASE_URL` | Public URL of the Blob store, e.g. `https://<store-id>.public.blob.vercel-storage.com` |
-| `UPLOAD_PASSWORD` | Password for `/upload` admin actions |
+| `UPLOAD_PASSWORD` | Password for `/admin` |
+| `SESSION_SECRET` | High-entropy HMAC secret for admin session cookies (32+ random bytes hex) |
+| `AUTH_EPOCH` | Integer; bump to invalidate all live admin cookies (default `1`) |
 
-## Admin upload
+## Admin
 
-`/upload` is a password-gated dashboard for creating albums, uploading images, setting cover images, and promoting albums to the home page.
+`/admin` is a password-gated dashboard for creating albums, uploading images, setting cover images, reordering, and promoting albums to the home page.
+
+Auth is a stateless signed cookie (`SESSION_SECRET` HMAC). Bump `AUTH_EPOCH` to revoke all sessions immediately. Originals upload directly browser-to-Blob (bypassing Vercel's 4.5MB function payload limit); the server fetches them back to generate the 800px JPEG thumbnail and 24px LQIP via Sharp.
+
+Slugs are immutable once an album is created (so renames never split metadata across paths). Title, description, cover, and promoted state are editable.
 
 ## Layout
 

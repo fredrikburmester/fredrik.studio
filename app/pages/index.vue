@@ -6,24 +6,23 @@ const img = useImage();
 const { public: runtimePublic } = useRuntimeConfig();
 const blobBaseUrl = runtimePublic.blobBaseUrl;
 
-const { data: albums } = await useFetch<AlbumMeta[]>(
-  "/api/albums/promoted",
-  {
-    key: "promoted-albums",
-    server: false,
-    default: () => [],
-  }
-);
+const { data: albums } = await useFetch<AlbumMeta[]>("/api/albums/promoted", {
+  key: "promoted-albums",
+  server: false,
+  default: () => [],
+});
 
 const albumLinks = computed(() => {
   if (!albums.value) return [];
-  return albums.value.map((album) => ({
-    label: album.title,
-    to: `/${album.slug}`,
-    coverImage: album.coverImage
-      ? `${blobBaseUrl}/${album.coverImage}`
-      : undefined,
-  }));
+  return albums.value.map((album) => {
+    return {
+      label: album.title,
+      to: `/${album.slug}`,
+      coverImage: album.coverImage
+        ? `${blobBaseUrl}/${album.coverImage}`
+        : undefined,
+    };
+  });
 });
 
 const firstCover = computed(() => albumLinks.value?.[0]?.coverImage);
