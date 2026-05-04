@@ -26,6 +26,7 @@ export default defineEventHandler(async (event) => {
     slug?: string;
     description?: string;
     promoted?: boolean;
+    type?: string;
     baseVersion?: { path: string; timestamp: number } | null;
   }>(event);
 
@@ -55,6 +56,7 @@ export default defineEventHandler(async (event) => {
     description: body?.description?.trim() || undefined,
     createdAt: new Date().toISOString(),
     promoted: Boolean(body?.promoted),
+    type: body?.type?.trim() || undefined,
   };
 
   try {

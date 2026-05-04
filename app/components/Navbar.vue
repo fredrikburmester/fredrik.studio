@@ -10,23 +10,24 @@ const img = useImage();
 
 const { data: albums } = await useFetch<AlbumCollection>("/api/albums");
 
-const links = computed(() => {
-  const albumLinks = (albums.value || []).map((album) => ({
-    label: album.title,
-    to: `/${album.slug}`,
-    badge: album.description ? album.description : undefined,
-  }));
+const groupedAlbums = computed(() => {
+  const list = albums.value || [];
+  const groups = new Map<string, typeof list>();
+  for (const album of list) {
+    const key = album.type?.trim() || "";
+    const bucket = groups.get(key) ?? [];
+    bucket.push(album);
+    groups.set(key, bucket);
+  }
 
-  return [
-    {
-      label: "Home",
-      to: "/",
-      click: () => {
-        isOpen.value = false;
-      },
-    },
-    ...albumLinks,
-  ];
+  const typed = [...groups.entries()]
+    .filter(([key]) => key !== "")
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([type, items]) => ({ type, items }));
+
+  const untyped = groups.get("") ?? [];
+  if (untyped.length) typed.push({ type: "", items: untyped });
+  return typed;
 });
 
 const currentAlbumTitle = computed(() => {
@@ -97,20 +98,39 @@ watch(
               @click="isOpen = false"
             />
           </div>
-          <nav class="flex flex-col">
+          <nav class="flex flex-col text-black">
             <NuxtLink
-              v-for="link in links"
-              :key="link.to"
-              :to="link.to"
+              to="/"
               class="text-2xl py-1.5 hover:underline decoration-4 decoration-yellow-400 underline-offset-2"
-              active-class="underline decoration-4 decoration-yellow-400 underline-offset-2"
+              exact-active-class="font-bold underline decoration-4 decoration-yellow-400 underline-offset-2"
               @click="isOpen = false"
             >
-              {{ link.label }}
+              Home
             </NuxtLink>
+            <template v-for="group in groupedAlbums" :key="group.type || '_untyped'">
+              <p
+                v-if="group.type"
+                class="text-2xl py-1.5"
+              >
+                {{ group.type }}
+              </p>
+              <NuxtLink
+                v-for="album in group.items"
+                :key="album.slug"
+                :to="`/${album.slug}`"
+                :class="[
+                  'text-2xl py-1.5 hover:underline decoration-4 decoration-yellow-400 underline-offset-2',
+                  group.type ? 'pl-4' : '',
+                ]"
+                active-class="font-bold underline decoration-4 decoration-yellow-400 underline-offset-2"
+                @click="isOpen = false"
+              >
+                {{ album.title }}
+              </NuxtLink>
+            </template>
           </nav>
-          <hr class="my-8" />
-          <NuxtLink @click="isOpen = false" to="/contact">Contact me</NuxtLink>
+          <hr class="my-8 border-gray-200" />
+          <NuxtLink @click="isOpen = false" to="/contact" class="text-black">Contact me</NuxtLink>
         </div>
       </template>
     </USlideover>

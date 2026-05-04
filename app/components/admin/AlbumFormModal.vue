@@ -13,13 +13,14 @@ const props = defineProps<{
 const emit = defineEmits<{
   "update:modelValue": [value: ModelValue];
   submit: [
-    payload: { title: string; slug?: string; description?: string },
+    payload: { title: string; slug?: string; description?: string; type?: string },
   ];
 }>();
 
 const title = ref("");
 const slug = ref("");
 const description = ref("");
+const type = ref("");
 
 watch(
   () => props.modelValue,
@@ -28,6 +29,7 @@ watch(
       title.value = props.album?.title ?? "";
       slug.value = props.album?.slug ?? "";
       description.value = props.album?.description ?? "";
+      type.value = props.album?.type ?? "";
     }
   },
   { immediate: true },
@@ -41,6 +43,7 @@ const onSubmit = () => {
     title: title.value.trim(),
     slug: isEdit.value ? undefined : slug.value.trim() || undefined,
     description: description.value.trim() || undefined,
+    type: type.value.trim(),
   });
 };
 
@@ -98,6 +101,18 @@ const open = computed({
             <p class="text-[11px] text-neutral-500">
               Locked once the album is created.
             </p>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="block text-[12px] font-medium text-neutral-700">
+              Type
+            </label>
+            <UInput
+              v-model="type"
+              size="md"
+              placeholder="Optional · group label, e.g. Travel, Editorial"
+              class="w-full"
+            />
           </div>
 
           <div class="space-y-1.5">

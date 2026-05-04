@@ -17,6 +17,7 @@ export type AlbumMeta = {
   posterImage?: string;
   createdAt: string;
   promoted?: boolean;
+  type?: string;
 };
 
 export type AlbumCollection = AlbumMeta[];

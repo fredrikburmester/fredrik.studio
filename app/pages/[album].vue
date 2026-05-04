@@ -130,6 +130,7 @@ useSeoMeta({
         </template>
       </UButton>
       <h1
+        v-if="data"
         ref="title"
         :class="[
           'text-6xl md:text-[5vw] font-bold mb-2 origin-bottom-left',
@@ -138,6 +139,10 @@ useSeoMeta({
       >
         {{ displayTitle }}
       </h1>
+      <div
+        v-else
+        class="h-[60px] md:h-[5vw] w-2/3 max-w-[20vw] mb-2 animate-pulse rounded-lg bg-neutral-900/10"
+      />
       <div v-if="data">
         <UBadge color="primary">{{ data.length }} images</UBadge>
       </div>

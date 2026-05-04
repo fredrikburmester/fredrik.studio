@@ -10,8 +10,6 @@ const { adminFetch } = useAdminFetch();
 const { public: runtimePublic } = useRuntimeConfig();
 const blobBaseUrl = runtimePublic.blobBaseUrl;
 
-const posterUrl = (path?: string) => (path ? `${blobBaseUrl}/${path}` : null);
-
 const albums = ref<AlbumCollection>([]);
 const version = ref<VersionInfo>(null);
 const loading = ref(false);
@@ -25,15 +23,24 @@ const formSubmitting = ref(false);
 const deletingSlug = ref<string | null>(null);
 const deleteConfirm = ref("");
 
+const orderStatus = ref<"idle" | "saving" | "saved" | "error">("idle");
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+let savedFlashTimer: ReturnType<typeof setTimeout> | null = null;
+
 const refresh = async () => {
   loading.value = true;
   error.value = null;
   try {
-    albums.value = await $fetch<AlbumCollection>("/api/albums");
-    const versionResponse = await $fetch<{ albums: AlbumCollection; version: VersionInfo }>(
-      "/api/admin/albums-version",
-    ).catch(() => null);
-    if (versionResponse) version.value = versionResponse.version;
+    const versionResponse = await adminFetch<{
+      albums: AlbumCollection;
+      version: VersionInfo;
+    }>("/api/admin/albums-version").catch(() => null);
+    if (versionResponse) {
+      albums.value = versionResponse.albums;
+      version.value = versionResponse.version;
+    } else {
+      albums.value = await $fetch<AlbumCollection>("/api/albums");
+    }
   } catch (err) {
     error.value = err instanceof Error ? err.message : "Failed to load albums";
   } finally {
@@ -59,6 +66,7 @@ const submitForm = async (payload: {
   title: string;
   slug?: string;
   description?: string;
+  type?: string;
 }) => {
   formError.value = null;
   formSubmitting.value = true;
@@ -145,6 +153,53 @@ const confirmDelete = async () => {
 };
 
 const promotedCount = computed(() => albums.value.filter((a) => a.promoted).length);
+
+const saveOrder = async () => {
+  orderStatus.value = "saving";
+  error.value = null;
+  try {
+    const res = await adminFetch<{ version: VersionInfo }>(
+      "/api/albums/order",
+      {
+        method: "PATCH",
+        body: {
+          order: albums.value.map((a) => a.slug),
+          baseVersion: version.value,
+        },
+      },
+    );
+    version.value = res.version;
+    orderStatus.value = "saved";
+    if (savedFlashTimer) clearTimeout(savedFlashTimer);
+    savedFlashTimer = setTimeout(() => {
+      if (orderStatus.value === "saved") orderStatus.value = "idle";
+    }, 1500);
+  } catch (err) {
+    orderStatus.value = "error";
+    if ((err as { statusCode?: number })?.statusCode === 409) {
+      error.value = "Albums changed elsewhere. Reloading...";
+      await refresh();
+    } else {
+      error.value =
+        (err as { statusMessage?: string })?.statusMessage ||
+        (err instanceof Error ? err.message : "Save failed");
+    }
+  }
+};
+
+const onReorder = (next: AlbumMeta[]) => {
+  albums.value = next;
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    saveOrder();
+  }, 350);
+};
+
+onBeforeUnmount(() => {
+  if (saveTimer) clearTimeout(saveTimer);
+  if (savedFlashTimer) clearTimeout(savedFlashTimer);
+});
 </script>
 
 <template>
@@ -186,10 +241,6 @@ const promotedCount = computed(() => albums.value.filter((a) => a.promoted).leng
         <p class="text-[12px] font-medium uppercase tracking-wider text-neutral-400">Promoted</p>
         <p class="mt-1 text-3xl font-semibold tracking-tight">{{ promotedCount }}</p>
       </div>
-      <div class="hidden rounded-2xl border border-white/60 bg-white/70 p-5 shadow-[0_1px_0_rgba(0,0,0,0.04)] backdrop-blur sm:block">
-        <p class="text-[12px] font-medium uppercase tracking-wider text-neutral-400">Hidden</p>
-        <p class="mt-1 text-3xl font-semibold tracking-tight">{{ albums.length - promotedCount }}</p>
-      </div>
     </section>
 
     <p
@@ -199,118 +250,59 @@ const promotedCount = computed(() => albums.value.filter((a) => a.promoted).leng
       {{ error }}
     </p>
 
-    <!-- Album grid -->
-    <ul
-      v-if="albums.length"
-      class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-    >
-      <li
-        v-for="album in albums"
-        :key="album.slug"
-        class="group relative flex flex-col overflow-hidden rounded-3xl border border-white/60 bg-white/80 shadow-[0_1px_0_rgba(0,0,0,0.04),0_20px_40px_-24px_rgba(0,0,0,0.18)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:shadow-[0_1px_0_rgba(0,0,0,0.04),0_28px_50px_-22px_rgba(0,0,0,0.25)]"
-      >
-        <NuxtLink
-          :to="`/admin/${album.slug}`"
-          class="relative block aspect-[5/3] overflow-hidden bg-gradient-to-br from-neutral-100 to-neutral-200"
+    <!-- Album list -->
+    <section v-if="albums.length" class="space-y-3">
+      <div class="flex items-baseline justify-between">
+        <p class="text-[12px] text-neutral-400">
+          Drag the handle to reorder · saves automatically
+        </p>
+        <Transition
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="opacity-0 translate-y-1"
+          enter-to-class="opacity-100 translate-y-0"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="opacity-100"
+          leave-to-class="opacity-0"
         >
-          <img
-            v-if="album.posterImage"
-            :src="posterUrl(album.posterImage)!"
-            :alt="album.title"
-            class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-            loading="lazy"
-          />
-          <div
-            v-else
-            class="flex h-full w-full items-center justify-center text-neutral-300"
+          <span
+            v-if="orderStatus !== 'idle'"
+            :class="[
+              'inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[11px] font-medium',
+              orderStatus === 'saving' && 'bg-neutral-900/5 text-neutral-600',
+              orderStatus === 'saved' && 'bg-emerald-500/10 text-emerald-700',
+              orderStatus === 'error' && 'bg-red-500/10 text-red-700',
+            ]"
           >
-            <UIcon name="i-heroicons-photo" class="h-10 w-10" />
-          </div>
+            <UIcon
+              :name="
+                orderStatus === 'saving'
+                  ? 'i-heroicons-arrow-path'
+                  : orderStatus === 'saved'
+                    ? 'i-heroicons-check'
+                    : 'i-heroicons-exclamation-triangle'
+              "
+              :class="['h-3 w-3', orderStatus === 'saving' && 'animate-spin']"
+            />
+            {{
+              orderStatus === "saving"
+                ? "Saving order"
+                : orderStatus === "saved"
+                  ? "Saved"
+                  : "Save failed"
+            }}
+          </span>
+        </Transition>
+      </div>
 
-          <div class="absolute right-3 top-3">
-            <span
-              :class="[
-                'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium backdrop-blur-md',
-                album.promoted
-                  ? 'bg-emerald-500/90 text-white shadow-sm'
-                  : 'bg-black/40 text-white',
-              ]"
-            >
-              <span
-                :class="[
-                  'h-1.5 w-1.5 rounded-full',
-                  album.promoted ? 'bg-white' : 'bg-white/70',
-                ]"
-              />
-              {{ album.promoted ? "Promoted" : "Hidden" }}
-            </span>
-          </div>
-        </NuxtLink>
-
-        <div class="flex flex-1 flex-col gap-3 p-5">
-          <div class="min-w-0 space-y-1">
-            <NuxtLink
-              :to="`/admin/${album.slug}`"
-              class="block truncate text-[17px] font-semibold tracking-tight text-neutral-900 hover:text-neutral-700"
-            >
-              {{ album.title }}
-            </NuxtLink>
-            <p class="truncate font-mono text-[11px] text-neutral-400">/{{ album.slug }}</p>
-            <p
-              v-if="album.description"
-              class="line-clamp-2 pt-1 text-[13px] leading-relaxed text-neutral-600"
-            >
-              {{ album.description }}
-            </p>
-          </div>
-
-          <div class="mt-auto flex items-center justify-between gap-1 border-t border-neutral-900/5 pt-3">
-            <NuxtLink
-              :to="`/admin/${album.slug}`"
-              class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium text-neutral-700 transition hover:bg-neutral-900/5"
-            >
-              <UIcon name="i-heroicons-photo" class="h-3.5 w-3.5" />
-              Manage
-            </NuxtLink>
-
-            <div class="flex items-center gap-0.5">
-              <button
-                type="button"
-                class="inline-flex h-8 w-8 items-center justify-center rounded-full text-neutral-500 transition hover:bg-neutral-900/5 hover:text-neutral-900"
-                :title="`Edit ${album.title}`"
-                @click="openEdit(album)"
-              >
-                <UIcon name="i-heroicons-pencil-square" class="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                :class="[
-                  'inline-flex h-8 w-8 items-center justify-center rounded-full transition',
-                  album.promoted
-                    ? 'text-emerald-600 hover:bg-emerald-500/10'
-                    : 'text-neutral-500 hover:bg-neutral-900/5 hover:text-neutral-900',
-                ]"
-                :title="album.promoted ? 'Unpromote' : 'Promote'"
-                @click="togglePromoted(album)"
-              >
-                <UIcon
-                  :name="album.promoted ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
-                  class="h-4 w-4"
-                />
-              </button>
-              <button
-                type="button"
-                class="inline-flex h-8 w-8 items-center justify-center rounded-full text-neutral-500 transition hover:bg-red-500/10 hover:text-red-600"
-                :title="`Delete ${album.title}`"
-                @click="askDelete(album.slug)"
-              >
-                <UIcon name="i-heroicons-trash" class="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </li>
-    </ul>
+      <AdminAlbumListSortable
+        :albums="albums"
+        :blob-base-url="blobBaseUrl"
+        @reorder="onReorder"
+        @edit="openEdit"
+        @toggle-promoted="togglePromoted"
+        @delete="askDelete"
+      />
+    </section>
 
     <!-- Empty state -->
     <div

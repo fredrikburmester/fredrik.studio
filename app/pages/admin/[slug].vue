@@ -18,9 +18,10 @@ const albumsVersion = ref<VersionInfo>(null);
 const loading = ref(false);
 const error = ref<string | null>(null);
 const busyName = ref<string | null>(null);
-const dirty = ref(false);
-const savingOrder = ref(false);
+const orderStatus = ref<"idle" | "saving" | "saved" | "error">("idle");
 const lastUploadError = ref<string | null>(null);
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+let savedFlashTimer: ReturnType<typeof setTimeout> | null = null;
 
 useHead({ title: () => `Studio — ${album.value?.title ?? slug.value}` });
 
@@ -34,7 +35,6 @@ const loadItems = async () => {
   );
   items.value = data.items;
   itemsVersion.value = data.version;
-  dirty.value = false;
 };
 
 const loadAlbumsVersion = async () => {
@@ -60,13 +60,8 @@ const refresh = async () => {
 
 await refresh();
 
-const onReorder = (next: ReturnItem[]) => {
-  items.value = next;
-  dirty.value = true;
-};
-
 const saveOrder = async () => {
-  savingOrder.value = true;
+  orderStatus.value = "saving";
   error.value = null;
   try {
     const res = await adminFetch<{ version: VersionInfo }>(
@@ -80,8 +75,13 @@ const saveOrder = async () => {
       },
     );
     itemsVersion.value = res.version;
-    dirty.value = false;
+    orderStatus.value = "saved";
+    if (savedFlashTimer) clearTimeout(savedFlashTimer);
+    savedFlashTimer = setTimeout(() => {
+      if (orderStatus.value === "saved") orderStatus.value = "idle";
+    }, 1500);
   } catch (err) {
+    orderStatus.value = "error";
     if ((err as { statusCode?: number })?.statusCode === 409) {
       error.value = "Album changed elsewhere. Reloading...";
       await loadItems();
@@ -90,10 +90,22 @@ const saveOrder = async () => {
         (err as { statusMessage?: string })?.statusMessage ||
         (err instanceof Error ? err.message : "Save failed");
     }
-  } finally {
-    savingOrder.value = false;
   }
 };
+
+const onReorder = (next: ReturnItem[]) => {
+  items.value = next;
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    saveOrder();
+  }, 350);
+};
+
+onBeforeUnmount(() => {
+  if (saveTimer) clearTimeout(saveTimer);
+  if (savedFlashTimer) clearTimeout(savedFlashTimer);
+});
 
 const commitUploads = async (
   uploads: { blobUrl: string; originalName: string }[],
@@ -223,9 +235,16 @@ const coverUrl = computed(() =>
           <p class="font-mono text-[11px] uppercase tracking-wider text-neutral-400">
             /{{ slug }}
           </p>
-          <h1 class="text-[34px] font-semibold leading-none tracking-tight text-neutral-900">
-            {{ album?.title ?? slug }}
+          <h1
+            v-if="album"
+            class="text-[34px] font-semibold leading-none tracking-tight text-neutral-900"
+          >
+            {{ album.title }}
           </h1>
+          <div
+            v-else
+            class="h-[34px] w-2/3 animate-pulse rounded-lg bg-neutral-900/5"
+          />
           <p
             v-if="album?.description"
             class="max-w-prose text-[14px] leading-relaxed text-neutral-600"
@@ -256,19 +275,33 @@ const coverUrl = computed(() =>
           leave-from-class="opacity-100"
           leave-to-class="opacity-0"
         >
-          <button
-            v-if="dirty"
-            type="button"
-            :disabled="savingOrder"
-            class="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-neutral-900 px-5 text-[13px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.08),0_8px_20px_-8px_rgba(0,0,0,0.4)] transition hover:bg-neutral-800 active:scale-[0.98] disabled:opacity-60"
-            @click="saveOrder"
+          <span
+            v-if="orderStatus !== 'idle'"
+            :class="[
+              'inline-flex h-9 shrink-0 items-center gap-2 rounded-full px-4 text-[12px] font-medium',
+              orderStatus === 'saving' && 'bg-neutral-900/5 text-neutral-600',
+              orderStatus === 'saved' && 'bg-emerald-500/10 text-emerald-700',
+              orderStatus === 'error' && 'bg-red-500/10 text-red-700',
+            ]"
           >
             <UIcon
-              :name="savingOrder ? 'i-heroicons-arrow-path' : 'i-heroicons-check'"
-              :class="['h-4 w-4', savingOrder && 'animate-spin']"
+              :name="
+                orderStatus === 'saving'
+                  ? 'i-heroicons-arrow-path'
+                  : orderStatus === 'saved'
+                    ? 'i-heroicons-check'
+                    : 'i-heroicons-exclamation-triangle'
+              "
+              :class="['h-3.5 w-3.5', orderStatus === 'saving' && 'animate-spin']"
             />
-            {{ savingOrder ? "Saving" : "Save order" }}
-          </button>
+            {{
+              orderStatus === "saving"
+                ? "Saving order"
+                : orderStatus === "saved"
+                  ? "Saved"
+                  : "Save failed"
+            }}
+          </span>
         </Transition>
       </div>
     </section>
@@ -307,7 +340,7 @@ const coverUrl = computed(() =>
           Images
         </h2>
         <p v-if="items.length" class="text-[12px] text-neutral-400">
-          Drag to reorder · hover for actions
+          Drag the handle to reorder · saves automatically
         </p>
       </div>
 

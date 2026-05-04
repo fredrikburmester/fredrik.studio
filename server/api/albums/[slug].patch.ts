@@ -21,6 +21,7 @@ export default defineEventHandler(async (event) => {
     description?: string | null;
     posterImage?: string | null;
     promoted?: boolean;
+    type?: string | null;
     baseVersion?: { path: string; timestamp: number } | null;
   }>(event);
 
@@ -56,6 +57,9 @@ export default defineEventHandler(async (event) => {
   }
   if (typeof body?.promoted === "boolean") {
     updated.promoted = body.promoted;
+  }
+  if (body?.type !== undefined) {
+    updated.type = body.type?.trim() || undefined;
   }
 
   const next = [...albums];
