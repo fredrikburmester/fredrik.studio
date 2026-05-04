@@ -18,21 +18,21 @@ const albumLinks = computed(() => {
     return {
       label: album.title,
       to: `/${album.slug}`,
-      coverImage: album.coverImage
-        ? `${blobBaseUrl}/${album.coverImage}`
+      posterImage: album.posterImage
+        ? `${blobBaseUrl}/${album.posterImage}`
         : undefined,
     };
   });
 });
 
-const firstCover = computed(() => albumLinks.value?.[0]?.coverImage);
+const firstPoster = computed(() => albumLinks.value?.[0]?.posterImage);
 
 useSeoMeta({
   title: "FB - Home",
   ogTitle: "Fredrik Burmester",
   description: "Photographer",
   ogDescription: "Photographer",
-  ogImage: firstCover.value,
+  ogImage: firstPoster.value,
 });
 </script>
 
@@ -67,7 +67,7 @@ useSeoMeta({
               {{ l.label }}
             </p>
             <img
-              :src="l.coverImage || '/pp-lq.jpg'"
+              :src="l.posterImage || '/pp-lq.jpg'"
               class="absolute top-0 left-0 shrink-0 min-w-full z-0 brightness-50 min-h-full object-cover"
             />
           </NuxtLink>
@@ -95,7 +95,7 @@ useSeoMeta({
                 {{ l.label }}
               </p>
               <img
-                :src="l.coverImage || '/pp-lq.jpg'"
+                :src="l.posterImage || '/pp-lq.jpg'"
                 class="absolute top-0 left-0 shrink-0 min-w-full z-0 brightness-50 min-h-full object-cover"
                 alt="gallery cover"
               />

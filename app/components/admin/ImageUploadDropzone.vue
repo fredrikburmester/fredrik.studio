@@ -77,45 +77,81 @@ const onChange = (e: Event) => {
   target.value = "";
 };
 
-const buttonLabel = computed(() => {
-  if (!uploading.value) return "Choose files";
+const progressPct = computed(() =>
+  progress.value.total > 0
+    ? Math.round((progress.value.done / progress.value.total) * 100)
+    : 0,
+);
+
+const phaseLabel = computed(() => {
+  if (!uploading.value) return "Drop images or click to browse";
   if (phase.value === "saving") {
-    return `Saving batch (${progress.value.done}/${progress.value.total})...`;
+    return `Saving ${progress.value.done} of ${progress.value.total}…`;
   }
-  return `Uploading ${progress.value.done}/${progress.value.total}...`;
+  return `Uploading ${progress.value.done} of ${progress.value.total}…`;
 });
 </script>
 
 <template>
   <div
     :class="[
-      'relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-10 text-center transition',
+      'relative overflow-hidden rounded-3xl border-2 border-dashed p-8 transition-all duration-200',
       dragActive
-        ? 'border-primary-500 bg-primary-50'
-        : 'border-neutral-300 bg-white hover:bg-neutral-50',
+        ? 'border-neutral-900 bg-neutral-900/5 scale-[1.005]'
+        : 'border-neutral-300/80 bg-white/60 hover:border-neutral-400 hover:bg-white/80',
+      uploading && 'pointer-events-none',
     ]"
     @dragenter.prevent="dragActive = true"
     @dragover.prevent="dragActive = true"
     @dragleave.prevent="dragActive = false"
     @drop="onDrop"
   >
-    <UIcon
-      name="i-heroicons-cloud-arrow-up"
-      class="h-8 w-8 text-neutral-400"
-    />
-    <p class="text-sm text-neutral-700">
-      Drag & drop JPEG, PNG, or WebP files here
-    </p>
-    <p class="text-xs text-neutral-500">Max 50&nbsp;MB each</p>
-    <UButton
-      color="primary"
-      variant="soft"
-      :loading="uploading"
-      :disabled="uploading"
-      @click="pickFiles"
+    <div class="flex flex-col items-center gap-4 text-center">
+      <div
+        :class="[
+          'flex h-14 w-14 items-center justify-center rounded-2xl transition',
+          dragActive
+            ? 'bg-neutral-900 text-white scale-110'
+            : 'bg-neutral-900/5 text-neutral-700',
+        ]"
+      >
+        <UIcon
+          :name="uploading ? 'i-heroicons-arrow-path' : 'i-heroicons-arrow-up-tray'"
+          :class="['h-6 w-6', uploading && 'animate-spin']"
+        />
+      </div>
+
+      <div class="space-y-1">
+        <p class="text-[15px] font-semibold tracking-tight text-neutral-900">
+          {{ phaseLabel }}
+        </p>
+        <p class="text-[12px] text-neutral-500">
+          JPEG, PNG, or WebP · Up to 50&nbsp;MB each
+        </p>
+      </div>
+
+      <button
+        type="button"
+        :disabled="uploading"
+        class="inline-flex h-9 items-center gap-2 rounded-full bg-neutral-900 px-5 text-[13px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.08),0_8px_20px_-8px_rgba(0,0,0,0.4)] transition hover:bg-neutral-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+        @click="pickFiles"
+      >
+        <UIcon name="i-heroicons-folder-open" class="h-4 w-4" />
+        Choose files
+      </button>
+    </div>
+
+    <!-- Progress bar -->
+    <div
+      v-if="uploading"
+      class="absolute inset-x-0 bottom-0 h-1 overflow-hidden bg-neutral-200/80"
     >
-      {{ buttonLabel }}
-    </UButton>
+      <div
+        class="h-full bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 transition-[width] duration-300 ease-out"
+        :style="{ width: `${progressPct}%` }"
+      />
+    </div>
+
     <input
       ref="fileInput"
       type="file"

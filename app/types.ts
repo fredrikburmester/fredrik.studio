@@ -14,7 +14,7 @@ export type AlbumMeta = {
   slug: string;
   title: string;
   description?: string;
-  coverImage?: string;
+  posterImage?: string;
   createdAt: string;
   promoted?: boolean;
 };

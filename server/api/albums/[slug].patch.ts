@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<{
     title?: string;
     description?: string | null;
-    coverImage?: string | null;
+    posterImage?: string | null;
     promoted?: boolean;
     baseVersion?: { path: string; timestamp: number } | null;
   }>(event);
@@ -51,8 +51,8 @@ export default defineEventHandler(async (event) => {
   if (body?.description !== undefined) {
     updated.description = body.description?.trim() || undefined;
   }
-  if (body?.coverImage !== undefined) {
-    updated.coverImage = body.coverImage || undefined;
+  if (body?.posterImage !== undefined) {
+    updated.posterImage = body.posterImage || undefined;
   }
   if (typeof body?.promoted === "boolean") {
     updated.promoted = body.promoted;

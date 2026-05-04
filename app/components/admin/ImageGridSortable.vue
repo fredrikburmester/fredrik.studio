@@ -58,87 +58,103 @@ const thumb = (name: string) =>
   <ClientOnly>
     <VueDraggable
       v-model="local"
-      :animation="180"
+      :animation="220"
       handle=".drag-handle"
       tag="ul"
       item-key="name"
-      class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4"
+      class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      ghost-class="opacity-30"
+      chosen-class="!scale-[1.04] !shadow-2xl"
       @end="onSorted"
     >
       <li
         v-for="(item, idx) in local"
         :key="item.name"
-        class="group relative overflow-hidden rounded-lg border border-neutral-200 bg-white"
+        class="group relative aspect-square overflow-hidden rounded-2xl border border-white/60 bg-white shadow-[0_1px_0_rgba(0,0,0,0.04),0_10px_24px_-16px_rgba(0,0,0,0.3)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_1px_0_rgba(0,0,0,0.04),0_18px_36px_-18px_rgba(0,0,0,0.4)]"
+        :style="{ backgroundColor: `rgb(${item.dominantColor.join(',')})` }"
       >
-        <div
-          class="aspect-square w-full overflow-hidden bg-neutral-100"
-          :style="{
-            backgroundColor: `rgb(${item.dominantColor.join(',')})`,
-          }"
-        >
-          <img
-            :src="thumb(item.name)"
-            :alt="item.name"
-            class="h-full w-full object-cover"
-            loading="lazy"
-          />
+        <img
+          :src="thumb(item.name)"
+          :alt="item.name"
+          class="h-full w-full object-cover"
+          loading="lazy"
+        />
+
+        <!-- Top: index pill + cover star -->
+        <div class="pointer-events-none absolute left-2 top-2 flex items-center gap-1">
+          <span
+            class="inline-flex items-center justify-center rounded-full bg-black/55 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur-md"
+          >
+            {{ idx + 1 }}
+          </span>
+          <span
+            v-if="isCover && isCover(item.name)"
+            class="inline-flex items-center gap-1 rounded-full bg-amber-400/95 px-2 py-0.5 text-[11px] font-semibold text-amber-950 shadow-sm backdrop-blur-md"
+          >
+            <UIcon name="i-heroicons-star-solid" class="h-3 w-3" />
+            Cover
+          </span>
         </div>
 
-        <div
-          class="absolute left-1 top-1 flex items-center gap-1 rounded bg-black/50 px-1.5 py-0.5 text-xs text-white"
+        <!-- Top right: drag handle -->
+        <button
+          type="button"
+          class="drag-handle absolute right-2 top-2 inline-flex h-7 w-7 cursor-grab items-center justify-center rounded-full bg-black/55 text-white opacity-0 backdrop-blur-md transition group-hover:opacity-100 active:cursor-grabbing"
+          aria-label="Drag to reorder"
         >
-          {{ idx + 1 }}
-          <span v-if="isCover && isCover(item.name)" class="ml-1">★</span>
-        </div>
+          <UIcon name="i-heroicons-bars-3" class="h-3.5 w-3.5" />
+        </button>
 
+        <!-- Bottom action bar -->
         <div
-          class="drag-handle absolute right-1 top-1 cursor-grab rounded bg-black/50 p-1 text-white active:cursor-grabbing"
-          aria-hidden="true"
+          class="absolute inset-x-0 bottom-0 flex translate-y-2 items-center justify-between gap-1 bg-gradient-to-t from-black/70 via-black/40 to-transparent p-2 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"
         >
-          <UIcon name="i-heroicons-bars-3" class="h-4 w-4" />
-        </div>
-
-        <div
-          class="absolute inset-x-0 bottom-0 flex items-center justify-between gap-1 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 transition group-hover:opacity-100"
-        >
-          <div class="flex gap-1">
-            <UButton
-              size="xs"
-              color="neutral"
-              variant="solid"
-              icon="i-heroicons-arrow-up"
-              :aria-label="`Move ${item.name} earlier`"
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-neutral-800 shadow-sm backdrop-blur-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
               :disabled="idx === 0"
+              :aria-label="`Move ${item.name} earlier`"
               @click="moveUp(idx)"
-            />
-            <UButton
-              size="xs"
-              color="neutral"
-              variant="solid"
-              icon="i-heroicons-arrow-down"
-              :aria-label="`Move ${item.name} later`"
+            >
+              <UIcon name="i-heroicons-arrow-left" class="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-neutral-800 shadow-sm backdrop-blur-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
               :disabled="idx === local.length - 1"
+              :aria-label="`Move ${item.name} later`"
               @click="moveDown(idx)"
-            />
+            >
+              <UIcon name="i-heroicons-arrow-right" class="h-3.5 w-3.5" />
+            </button>
           </div>
-          <div class="flex gap-1">
-            <UButton
-              size="xs"
-              color="primary"
-              variant="solid"
-              icon="i-heroicons-star"
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              :class="[
+                'inline-flex h-8 w-8 items-center justify-center rounded-full shadow-sm backdrop-blur-md transition',
+                isCover && isCover(item.name)
+                  ? 'bg-amber-400 text-amber-950 hover:bg-amber-300'
+                  : 'bg-white/90 text-neutral-800 hover:bg-white',
+              ]"
               :aria-label="`Set ${item.name} as cover`"
               @click="emit('setCover', item)"
-            />
-            <UButton
-              size="xs"
-              color="error"
-              variant="solid"
-              icon="i-heroicons-trash"
-              :loading="busyName === item.name"
+            >
+              <UIcon name="i-heroicons-star-solid" class="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500/95 text-white shadow-sm backdrop-blur-md transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+              :disabled="busyName === item.name"
               :aria-label="`Delete ${item.name}`"
               @click="emit('delete', item)"
-            />
+            >
+              <UIcon
+                :name="busyName === item.name ? 'i-heroicons-arrow-path' : 'i-heroicons-trash'"
+                :class="['h-3.5 w-3.5', busyName === item.name && 'animate-spin']"
+              />
+            </button>
           </div>
         </div>
       </li>
